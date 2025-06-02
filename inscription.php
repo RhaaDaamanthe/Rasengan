@@ -1,60 +1,39 @@
 <?php
-session_start();
+require_once 'src/Initialisation/session_Auth.php';
+require_once 'src/config/database.php';
 
-// Rediriger les utilisateurs connectés vers index.php
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
 
-// Paramètres de connexion à la base de données
-$host = 'localhost';
-$dbname = 'rasengan_db';
-$username = 'root'; // Change avec ton nom d'utilisateur MySQL
-$password = ''; // Change avec ton mot de passe MySQL
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Échec de la connexion : " . $e->getMessage());
-}
-
-// Initialisation des variables
 $errors = [];
 $pseudo = '';
 $email = '';
 
 if (isset($_POST['envoi'])) {
-    // Nettoyage et validation des entrées
     $pseudo = trim($_POST['pseudo']);
     $email = trim($_POST['email']);
-    $password1 = $_POST['password1'];
-    $password2 = $_POST['password2'];
+    $password1 = $_POST['password1'] ?? '';
+    $password2 = $_POST['password2'] ?? '';
 
-    // Validation
-    if (empty($pseudo)) {
-        $errors[] = "Le pseudo est requis.";
-    } elseif (strlen($pseudo) < 3) {
+    // 🔒 Validation
+    if (empty($pseudo) || strlen($pseudo) < 3) {
         $errors[] = "Le pseudo doit contenir au moins 3 caractères.";
     }
 
-    if (empty($email)) {
-        $errors[] = "L'email est requis.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "L'email n'est pas valide.";
     } else {
-        // Vérifier si l'email existe déjà
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+        // Vérifier si l'email est déjà pris
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM utilisateurs WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetchColumn() > 0) {
             $errors[] = "Cet email est déjà utilisé.";
         }
     }
 
-    if (empty($password1)) {
-        $errors[] = "Le mot de passe est requis.";
-    } elseif (strlen($password1) < 8) {
+    if (strlen($password1) < 8) {
         $errors[] = "Le mot de passe doit contenir au moins 8 caractères.";
     }
 
@@ -62,17 +41,17 @@ if (isset($_POST['envoi'])) {
         $errors[] = "Les mots de passe ne correspondent pas.";
     }
 
-    // S'il n'y a pas d'erreurs, procéder à l'inscription
+    // ✅ Inscription
     if (empty($errors)) {
         $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
         try {
-            $stmt = $pdo->prepare("INSERT INTO users (pseudo, email, password) VALUES (?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO utilisateurs (pseudo, email, password) VALUES (?, ?, ?)");
             $stmt->execute([$pseudo, $email, $hashed_password]);
-            // Rediriger vers une page de succès ou de connexion
             header("Location: compte.php?success=1");
             exit;
         } catch (PDOException $e) {
-            $errors[] = "Erreur lors de l'inscription : " . $e->getMessage();
+            error_log("Erreur d'inscription : " . $e->getMessage());
+            $errors[] = "Une erreur est survenue. Veuillez réessayer plus tard.";
         }
     }
 }

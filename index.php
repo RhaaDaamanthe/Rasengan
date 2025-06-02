@@ -1,9 +1,5 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: compte.php");
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,6 +39,11 @@ if (!isset($_SESSION['user_id'])) {
       </nav>
     </header>
     <main>
+        <?php if (isset($_SESSION['user_id'])): ?>
+        <p class="welcome">Bienvenue dans ton espace, <?= htmlspecialchars($_SESSION['pseudo']) ?> !</p>
+        <?php else: ?>
+            <p class="welcome">Bienvenue ! <a href="compte.php">Connecte-toi</a> pour accéder à ta collection de cartes.</p>
+        <?php endif; ?>
       <div class="animecardcollection">
         <img src="./Images/Anime Cards Collection.jpg" alt="Image Description"/>
       </div>

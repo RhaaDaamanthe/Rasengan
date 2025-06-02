@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Connexion à la base de données
 $host = 'localhost';
-$dbname = 'rasengan_db';
+$dbname = 'Rasengan';
 $username = 'root';
 $password = '';
 
