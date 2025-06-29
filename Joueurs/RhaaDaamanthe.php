@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Connexion à la base de données
 $host = 'localhost';
-$dbname = 'rasengan_db';
+$dbname = 'Rasengan';
 $username = 'root';
 $password = '';
 
@@ -16,33 +16,54 @@ if ($conn->connect_error) {
     die("Erreur de connexion : " . $conn->connect_error);
 }
 
+$conn2 = new mysqli($host, $username, $password, $dbname);
+if ($conn2->connect_error) {
+    die("Erreur de connexion : " . $conn2->connect_error);
+}
+
 $user_id = 1;
 
-// Récupérer le pseudo d'Alexas
+// Récupérer le pseudo
 $sql_pseudo = "SELECT pseudo FROM utilisateurs WHERE id = ?";
 $stmt_pseudo = $conn->prepare($sql_pseudo);
 $stmt_pseudo->bind_param("i", $user_id);
 $stmt_pseudo->execute();
 $result_pseudo = $stmt_pseudo->get_result();
 if ($result_pseudo->num_rows === 0) {
-    die("Utilisateur Alexas non trouvé.");
+    die("Utilisateur niwa non trouvé.");
 }
 $target_user = $result_pseudo->fetch_assoc();
 $target_pseudo = $target_user['pseudo'];
 $stmt_pseudo->close();
 
-// Récupérer les cartes d'Alexas avec tri
+// Récupérer les cartes avec tri anime
 $sql = "
-    SELECT ca.id, ca.nom, ca.anime, ca.image_path, ca.id_rarete, r.libelle AS rarete, uc.quantite
+    SELECT ca.id, ca.nom, a.nom AS anime, ca.image_path, ca.id_rarete, r.libelle AS rarete, uc.quantite
     FROM utilisateurs_cartes_animes uc
     JOIN cartes_animes ca ON uc.carte_id = ca.id
     JOIN raretes r ON ca.id_rarete = r.id_rarete
+    LEFT JOIN animes a ON ca.id_anime = a.id  -- Utilise LEFT JOIN pour gérer les id_anime NULL
     WHERE uc.user_id = ?
     ORDER BY ca.id_rarete DESC, ca.id ASC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Récupérer les cartes avec tri films
+
+$sql2 = "
+    SELECT cf.id, cf.nom, f.nom AS film, cf.image_path, cf.id_rarete, r.libelle AS rarete, uc.quantite
+    FROM utilisateurs_cartes_films uc
+    JOIN cartes_films cf ON uc.carte_id = cf.id
+    JOIN raretes r ON cf.id_rarete = r.id_rarete
+    LEFT JOIN films f ON cf.id_film = f.id  -- Utilise LEFT JOIN pour gérer les id_film NULL
+    WHERE uc.user_id = ?
+    ORDER BY cf.id_rarete DESC, cf.id ASC";
+$stmt2 = $conn2->prepare($sql2);
+$stmt2->bind_param("i", $user_id);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
 
 // Préparer un tableau pour stocker les propriétaires de chaque carte
 $owners = [];
@@ -163,6 +184,25 @@ $result->data_seek(0);
             }
             $stmt->close();
             $conn->close();
+            ?>
+        </div>
+                <div class="catalogue2">
+            <?php
+            if ($result2->num_rows > 0) {
+                while ($row = $result2->fetch_assoc()) {
+                    $carte_id = $row['id'];
+                    echo '<div class="card" data-film="' . htmlspecialchars($row['film'] ?? '') . '">';
+                    echo '<img src="/Rasengan/' . htmlspecialchars($row['image_path']) . '" alt="' . htmlspecialchars($row['nom']) . '">';
+                    echo '<div class="card-content">';
+                    echo '<h2 class="card-title">' . htmlspecialchars($row['quantite']) . '</h2>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<p>' . htmlspecialchars($target_pseudo) . ' n\'a aucune carte dans son inventaire.</p>';
+            }
+            $stmt2->close();
+            $conn2->close();
             ?>
         </div>
     </main>

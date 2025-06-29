@@ -15,112 +15,6 @@ body {
     flex-direction: column;
 }
 
-/* #ancre_cata {
-    font-family: 'Poppins', sans-serif;
-    font-size: 3em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: transparent;
-    text-align: center;
-    padding: 10px 0px 40px 0px;
-    position: relative;
-    -webkit-text-stroke: 2px white;
-} */
-
-/* LOADER */
-
-/* .loader-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .hidden {
-    display: none;
-  }
-  
-  .loader {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  } */
-  
-
-/* BARRE DE NAVIGATION */
-
-/* header {
-    height: 80px;
-    width: 100%;
-    background-color: #420502;
-    background-size: cover;
-    display: flex;
-    align-items: center;
-    position: fixed;
-    z-index: 10;
-}
-
-.navbar {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    box-sizing: border-box;
-    align-items: center;
-}
-
-.navbar a {
-    color: white;
-}
-
-.navbar .logo {
-    font-size: 2em;
-    font-weight: bold;
-    padding: 20px;
-}
-
-.navbar .nav-links ul {
-    display: flex;
-}
-
-.navbar .nav-links ul li {
-    margin: 0 25px;
-}
-
-.navbar .nav-links ul li.active a {
-    color: #e76d0a;
-    font-weight: 600;
-}
-
-.nav-links a:hover {
-    color: #e76d0a;
-}
-
-.navbar .menu-burger {
-    width: 35px;
-    position: absolute;
-    right: 20px;
-    display: none;
-} */
-
 /* MAIN */
 
 main {
@@ -260,29 +154,6 @@ select {
     text-align: center;
 }
 
-/* FOOTER */
-
-/* footer {
-    background-color: #420502;
-    padding: 10px;
-    font-size: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 200px;
-}
-
-footer a {
-    color: #FFA074;
-}
-
-footer p {
-    color: #FFA074;
-}
-
-footer a:hover {
-    opacity: 70%;
-} */
-
 /* CATALOGUE ET CARTES */
 
 .catalogue {
@@ -349,6 +220,29 @@ footer a:hover {
 
 #main-compte {
     padding: 130px 0px;
+}
+
+/* Utilisateurs cartes */
+
+.card-content p {
+    font-size: 0.9em;
+    color: #555;
+    margin: 5px 0;
+}
+.card.expanded .card-content {
+    height: auto;
+    padding-bottom: 20px;
+    background: linear-gradient(white 75%, #FA9D11);
+}
+.owners-list {
+    display: none;
+    color: #808080;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+}
+.card.expanded .owners-list {
+    display: block;
 }
 
 /* Responsive */

@@ -10,6 +10,7 @@ return [
     ['nom' => 'Kenza', 'image' => 'Films_Epiques/24_Viktor.jpg'],
     ['nom' => 'Loris', 'image' => 'Communes/37_Senritsu.jpg'],
     ['nom' => 'Micka', 'image' => 'Epiques/111_Natsume.jpg'],
+    ['nom' => 'niwa', 'image' => 'Legendaires/74_Izumi.jpg'],
     ['nom' => 'RhaaDaamanthe', 'image' => 'Legendaires/6_Zenitsu.jpg'],
     ['nom' => 'Roxas', 'image' => 'Legendaires/3_David.jpg'],
     ['nom' => 'Swaye', 'image' => 'Epiques/98_Beatrice.jpg'],

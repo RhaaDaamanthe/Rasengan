@@ -47,21 +47,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-
-    // Gestion du clic sur les cartes pour afficher/masquer les propriétaires (catalogue2)
-    document.querySelectorAll(".catalogue2 .card").forEach((card) => {
-        card.addEventListener("click", (e) => {
-            e.preventDefault(); // Empêche tout comportement par défaut
-            const ownersElement = card.querySelector(".card-owners");
-            if (ownersElement) {
-                const isHidden = ownersElement.style.display === "none" || ownersElement.style.display === "";
-                ownersElement.style.display = isHidden ? "block" : "none";
-            }
-        });
-    });
 });
 
-// Fonction filterCards définie globalement
+// Barre de recherche
 function filterCards() {
     const searchInput = document.getElementById('searchbar');
     const rarityFilter = document.getElementById("rarityFilter");
@@ -78,13 +66,15 @@ function filterCards() {
         const imgSrc = cardImg?.getAttribute("src").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
         const characterName = cardImg?.getAttribute("alt")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
         const animeName = card.getAttribute("data-anime")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+        const filmName = card.getAttribute("data-film")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
 
         const rarityFromImage = extractRarityFromImage(imgSrc);
 
         const matchesSearch =
             searchValue === "" ||
             characterName.includes(searchValue) ||
-            animeName.includes(searchValue);
+            animeName.includes(searchValue) ||
+            filmName.includes(searchValue);
 
         const matchesRarity =
             selectedRarity === "" || rarityFromImage === selectedRarity;

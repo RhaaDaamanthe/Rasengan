@@ -21,7 +21,7 @@ if ($conn2->connect_error) {
     die("Erreur de connexion : " . $conn2->connect_error);
 }
 
-$user_id = 7;
+$user_id = 16;
 
 // Récupérer le pseudo
 $sql_pseudo = "SELECT pseudo FROM utilisateurs WHERE id = ?";

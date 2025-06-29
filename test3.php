@@ -19,11 +19,11 @@ if ($conn->connect_error) {
     die("Échec de la connexion : " . $conn->connect_error);
 }
 
-$sql = "SELECT ca.id, ca.nom, a.nom AS anime, ca.id_rarete, ca.image_path, ca.description, r.libelle AS rarete_libelle
-        FROM cartes_animes ca
-        JOIN raretes r ON ca.id_rarete = r.id_rarete
-        LEFT JOIN animes a ON ca.id_anime = a.id
-        ORDER BY ca.id_rarete DESC, ca.id ASC"; // Tri par rareté décroissante, puis ID croissant
+$sql = "SELECT cf.id, cf.nom, f.nom AS film, cf.id_rarete, cf.image_path, cf.description, r.libelle AS rarete_libelle
+        FROM cartes_films cf
+        JOIN raretes r ON cf.id_rarete = r.id_rarete
+        LEFT JOIN films f ON cf.id_film = f.id
+        ORDER BY cf.id_rarete DESC, cf.id ASC"; // Tri par rareté décroissante, puis ID croissant
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     die("Erreur de préparation de la requête principale : " . $conn->error);
@@ -42,7 +42,7 @@ $result = $stmt->get_result();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Rasengan - Collection de Cartes</title>
+    <title>Rasengan - Collection de Cartes de Films</title>
 </head>
 <body>
 <header>
@@ -67,7 +67,7 @@ $result = $stmt->get_result();
 </header>
 
 <main>
-    <input type="text" id="searchbar" placeholder="Recherche un personnage ou un animé">
+    <input type="text" id="searchbar" placeholder="Recherche un personnage ou un film">
 
     <div class="filters-container">
         <div class="filters">
@@ -93,13 +93,14 @@ $result = $stmt->get_result();
                 $idCarte = $row['id'];
                 $idRarete = $row['id_rarete'];
                 $nom = htmlspecialchars($row['nom']);
-                $anime = htmlspecialchars($row['anime'] ?? 'Animé');
+                $film = htmlspecialchars($row['film'] ?? 'Film');
                 $image = htmlspecialchars($row['image_path']);
                 $description = htmlspecialchars($row['description'] ?? '');
                 $infoSup = '';
 
+                // Gestion des propriétaires pour raretés 6, 5, 4 (un seul propriétaire)
                 if (in_array($idRarete, [6, 5, 4])) {
-                    $stmt2 = $conn->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id WHERE uc.carte_id = ? LIMIT 1");
+                    $stmt2 = $conn->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id WHERE uc.carte_id = ? LIMIT 1");
                     if (!$stmt2) {
                         die("Erreur de préparation (rarete 6-4) : " . $conn->error);
                     }
@@ -110,8 +111,9 @@ $result = $stmt->get_result();
                     $infoSup = $owner ? htmlspecialchars($owner['pseudo']) : 'Aucun';
                     $stmt2->close();
                 }
+                // Gestion des propriétaires pour raretés 3, 2, 1 (quantité totale et liste)
                 elseif (in_array($idRarete, [3, 2, 1])) {
-                    $stmt3 = $conn->prepare("SELECT SUM(quantite) as total FROM utilisateurs_cartes_animes WHERE carte_id = ?");
+                    $stmt3 = $conn->prepare("SELECT SUM(quantite) as total FROM utilisateurs_cartes_films WHERE carte_id = ?");
                     if (!$stmt3) {
                         die("Erreur de préparation (rarete 3-1) : " . $conn->error);
                     }
@@ -124,7 +126,7 @@ $result = $stmt->get_result();
                     elseif ($idRarete == 1 || $idRarete == 2) $infoSup .= '/3';
                     $stmt3->close();
 
-                    $stmt4 = $conn->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id WHERE uc.carte_id = ?");
+                    $stmt4 = $conn->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id WHERE uc.carte_id = ?");
                     if (!$stmt4) {
                         die("Erreur de préparation (propriétaires) : " . $conn->error);
                     }
@@ -139,7 +141,7 @@ $result = $stmt->get_result();
                     $stmt4->close();
                 }
 
-                echo '<div class="card" data-anime="' . $anime . '" data-rarete="' . $idRarete . '">';
+                echo '<div class="card" data-film="' . $film . '" data-rarete="' . $idRarete . '">';
                 echo '<img src="/Rasengan/' . $image . '" alt="' . $nom . '">';
                 echo '<div class="card-content">';
                 echo '<h2 class="card-title">' . $infoSup . '</h2>';
@@ -150,7 +152,7 @@ $result = $stmt->get_result();
                 echo '</div>';
             }
         } else {
-            echo '<p>Aucune carte trouvée dans la base de données.</p>';
+            echo '<p>Aucune carte de film trouvée dans la base de données.</p>';
         }
         $stmt->close();
         $conn->close();
