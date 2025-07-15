@@ -118,10 +118,10 @@ $result->data_seek(0);
 <body>
     <header>
         <nav class="navbar">
-            <a href="../index.php" class="logo">RASENGAN</a>
+            <a href="../public/index.php" class="logo">RASENGAN</a>
             <div class="nav-links">
                 <ul>
-                    <li><a href="../index.php">Accueil</a></li>
+                    <li><a href="../public/index.php">Accueil</a></li>
                     <li><a href="../catalogue.php">Catalogue</a></li>
                     <li class="active"><a href="../collection.php">Collection des joueurs</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>

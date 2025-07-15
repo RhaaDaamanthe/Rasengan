@@ -1,9 +1,9 @@
 <?php
-require_once 'src/Initialisation/session_Auth.php';
-require_once 'src/config/database.php';
+require_once '../src/Initialisation/session_Auth.php';
+require_once '../src/Middleware/authRequired.php';
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: index.php");
+    header("Location: /");
     exit;
 }
 
@@ -63,9 +63,9 @@ if (isset($_POST['envoi'])) {
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
-    <link rel="stylesheet" href="css/inscription.css">
-    <link rel="stylesheet" href="css/header.css"/>
-    <link rel="stylesheet" href="css/footer.css"/>
+    <link rel="stylesheet" href="/Css/inscription.css">
+    <link rel="stylesheet" href="/Css/header.css"/>
+    <link rel="stylesheet" href="/Css/footer.css"/>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -83,10 +83,10 @@ if (isset($_POST['envoi'])) {
 <body>
 <header>
       <nav class="navbar">
-        <a href="index.php" class="logo">RASENGAN</a>
+        <a href="public/index.php" class="logo">RASENGAN</a>
         <div class="nav-links">
           <ul>
-            <li><a href="index.php">Accueil</a></li>
+            <li><a href="public/index.php">Accueil</a></li>
             <li><a href="catalogue.php">Catalogue</a></li>
             <li><a href="collection.php">Collection des joueurs</a></li>
             <li><a href="compte.php">Connexion</a></li>
@@ -94,7 +94,7 @@ if (isset($_POST['envoi'])) {
           </ul>
         </div>
         <img
-          src="./Images/burger.png"
+          src="/Images/burger.png"
           alt="Menu Hamburger "
           class="menu-burger"
         />

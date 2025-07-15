@@ -1,0 +1,52 @@
+# === Environnements de développement ===
+.idea/                      # Configurations JetBrains (PhpStorm, WebStorm)
+.vscode/                    # Config VS Code
+*.code-workspace
+
+# === OS / Systèmes ===
+.DS_Store                   # macOS
+Thumbs.db                  # Windows
+
+# === Logs et caches ===
+*.log
+*.cache
+.cache/
+tmp/
+temp/
+
+# === Dépendances ===
+vendor/                    # Si Composer est utilisé (à ajuster si tu ne l’utilises pas)
+node_modules/              # Si usage de npm/yarn (ex. pour ton JS public)
+
+# === Fichiers personnels ===
+.env
+.env.local
+.env.*.local
+*.env.php
+
+# === Système de routing / sessions ===
+sessions/
+*.session.php
+
+# === Sauvegardes / fichiers temporaires ===
+*.bak
+*.swp
+*.swo
+*~
+
+# === Fichiers de tests temporaires ===
+test.php
+tests/
+
+# === Uploads / fichiers dynamiques ===
+uploads/
+public/uploads/
+
+# === Base de données locale ===
+src/Config/database.php     # Attention : ne jamais versionner tes accès DB
+
+# === Autre ===
+composer.lock               # optionnel, selon stratégie de versionnement
+package-lock.json           # idem
+
+/vendor/
