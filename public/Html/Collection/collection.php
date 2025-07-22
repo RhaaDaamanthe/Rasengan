@@ -23,15 +23,15 @@ requireLogin();
         <a href="public/index.php" class="logo">RASENGAN</a>
         <div class="nav-links">
             <ul>
-                <li><a href="public/index.php">Accueil</a></li>
-                <li><a href="catalogue.php">Catalogue</a></li>
-                <li class="active"><a href="collection.php">Collection des joueurs</a></li>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/catalogue">Catalogue</a></li>
+                <li class="active"><a href="/collection">Collection des joueurs</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li><span class="welcome-message">Bienvenue, <?= htmlspecialchars($_SESSION['pseudo']) ?>!</span></li>
-                    <li><a href="logout.php">Déconnexion</a></li>
+                    <li><a href="/logout">Déconnexion</a></li>
                 <?php else: ?>
-                    <li><a href="compte.php">Connexion</a></li>
-                    <li><a href="inscription.php">Inscription</a></li>
+                    <li><a href="/connexion">Connexion</a></li>
+                    <li><a href="/inscription">Inscription</a></li>
                 <?php endif; ?>
             </ul>
         </div>
