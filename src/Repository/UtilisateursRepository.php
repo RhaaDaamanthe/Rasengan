@@ -55,4 +55,21 @@ class UtilisateursRepository
         
     return null;
     }
+
+    public function emailExists(string $email): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT id FROM utilisateurs WHERE email = :email");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch() !== false;
+    }
+    
+    public function createUtilisateur(string $pseudo, string $email, string $passwordHash): void
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO utilisateurs (pseudo, email, password, is_admin) VALUES (:pseudo, :email, :password, 0)");
+        $stmt->execute([
+            'pseudo' => $pseudo,
+            'email' => $email,
+            'password' => $passwordHash
+        ]);
+    }
 }
