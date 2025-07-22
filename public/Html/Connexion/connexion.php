@@ -1,45 +1,3 @@
-<?php
-require_once '../src/Initialisation/session_Auth.php';
-require_once '../src/config/database.php';
-require_once '../src/services/AuthService.php';
-
-// Rediriger l'utilisateur connecté vers sa collection
-if (isset($_SESSION['user_id']) && !isset($_GET['redirect'])) {
-    header("Location: /collection");
-    exit;
-}
-
-
-$errors = [];
-$email = '';
-$success_message = '';
-
-// Afficher un message si l'inscription a réussi
-if (isset($_GET['success']) && $_GET['success'] == 1) {
-    $success_message = "Inscription réussie ! Veuillez vous connecter.";
-}
-
-// Traitement du formulaire de connexion
-if (isset($_POST['login'])) {
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-
-    $authService = new AuthService($pdo);
-    $result = $authService->login($email, $password);
-
-    if (isset($result['errors'])) {
-        $errors = $result['errors'];
-    } elseif (isset($result['user'])) {
-        $user = $result['user'];
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['pseudo'] = $user['pseudo'];
-        $_SESSION['is_admin'] = (bool)$user['is_admin'];
-        header("Location: index.php");
-        exit;
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -58,17 +16,17 @@ if (isset($_POST['login'])) {
 <body>
 <header>
     <nav class="navbar">
-        <a href="public/index.php" class="logo">RASENGAN</a>
+        <a href="/" class="logo">RASENGAN</a>
         <div class="nav-links">
             <ul>
-                <li><a href="public/index.php">Accueil</a></li>
-                <li><a href="catalogue.php">Catalogue</a></li>
-                <li><a href="collection.php">Collection des joueurs</a></li>
-                <li class="active"><a href="compte.php">Connexion</a></li>
-                <li><a href="inscription.php">Inscription</a></li>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/catalogue">Catalogue</a></li>
+                <li><a href="/collection">Collection des joueurs</a></li>
+                <li class="active"><a href="/connexion">Connexion</a></li>
+                <li><a href="/inscription">Inscription</a></li>
             </ul>
         </div>
-        <img src="./Images/burger.png" alt="Menu Hamburger" class="menu-burger" />
+        <img src="/Images/burger.png" alt="Menu Hamburger" class="menu-burger" />
     </nav>
 </header>
 
@@ -92,7 +50,7 @@ if (isset($_POST['login'])) {
             <?php endif; ?>
 
             <div class="input-box">
-                <input type="email" name="email" placeholder="Email" required value="<?= htmlspecialchars($email) ?>" />
+                <input type="email" name="email" placeholder="Email" required value="<?= htmlspecialchars($email ?? '') ?>" />
                 <i class='bx bx-envelope'></i>
             </div>
 
@@ -107,7 +65,7 @@ if (isset($_POST['login'])) {
 
             <p class="inscription">
                 Je n'ai pas de <span>compte</span>. Je m'en
-                <a href="inscription.php"><span>créer</span></a> un.
+                <a href="/inscription"><span>créer</span></a> un.
             </p>
 
             <div class="social-media">
@@ -123,6 +81,6 @@ if (isset($_POST['login'])) {
     <a href="https://discord.gg/kyfQZbnkjy" target="_blank">Rejoindre</a>
 </footer>
 
-<script src="js/main.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>
