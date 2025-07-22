@@ -2,7 +2,10 @@
 
 namespace App\Controller\Home;
 
-class HomeController
+//use
+use App\Controller\AbstractController;
+
+class HomeController extends AbstractController
 {
    public function __invoke(): void
     {
