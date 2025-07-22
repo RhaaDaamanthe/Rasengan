@@ -19,4 +19,11 @@ abstract class AbstractController
             exit;
         }
     }
+
+    protected function redirect(string $url): void
+    {
+        header("Location: $url");
+        exit;
+    }
+
 }
