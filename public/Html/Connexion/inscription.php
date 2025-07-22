@@ -31,7 +31,7 @@
             <li><a href="/">Accueil</a></li>
             <li><a href="/catalogue">Catalogue</a></li>
             <li><a href="/collection">Collection des joueurs</a></li>
-            <li><a href="/compte">Connexion</a></li>
+            <li><a href="/connexion">Connexion</a></li>
             <li class="active"><a href="/inscription">Inscription</a></li>
           </ul>
         </div>
@@ -44,7 +44,7 @@
     </header>
     <main>
     <div class="wrapper">
-      <form action="" method="POST">
+      <form action="/inscription" method="POST">
             <h1>Inscription</h1>
             <?php if (!empty($errors)): ?>
     <div class="error-messages" style="color: red; margin-bottom: 15px;">

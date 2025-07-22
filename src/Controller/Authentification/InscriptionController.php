@@ -4,7 +4,7 @@ namespace App\Controller\Authentification;
 
 //use
 use App\Controller\AbstractController;
-use Repository\UtilisateursRepository;
+use App\Repository\UtilisateursRepository;
 use App\Database\DBConnexion;
 
 class InscriptionController extends AbstractController {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Model\Utilisateur;
 use PDO;
-require_once __DIR__ . '/../Model/Utilisateur.php';
+
 class UtilisateursRepository
 {
     private PDO $pdo;
@@ -56,12 +56,16 @@ class UtilisateursRepository
     return null;
     }
 
-    public function emailExists(string $email): bool
+    public function getUserByEmail(string $email): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT id FROM utilisateurs WHERE email = :email");
-        $stmt->execute(['email' => $email]);
-        return $stmt->fetch() !== false;
+    $stmt = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE email = :email");
+    $stmt->execute(['email' => $email]);
+
+    $user = $stmt->fetch(\PDO::FETCH_ASSOC); // <<< important !
+
+    return $user ?: null;
     }
+
     
     public function createUtilisateur(string $pseudo, string $email, string $passwordHash): void
     {

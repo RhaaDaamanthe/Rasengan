@@ -1,3 +1,6 @@
+<?php
+
+
 // src/Controller/AbstractController.php
 namespace App\Controller;
 

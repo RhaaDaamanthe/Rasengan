@@ -24,7 +24,7 @@
             <li><span class="welcome-message">Bienvenue, <?= htmlspecialchars($_SESSION['pseudo']) ?>!</span></li>
             <li><a href="/logout">Déconnexion</a></li>
           <?php else: ?>
-            <li><a href="/compte">Connexion</a></li>
+            <li><a href="/connexion">Connexion</a></li>
             <li><a href="/inscription">Inscription</a></li>
           <?php endif; ?>
         </ul>

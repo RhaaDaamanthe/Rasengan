@@ -1,25 +1,27 @@
 <?php
 
-namespace App\Controller\Connexion;
+namespace App\Controller\Authentification;
 
 //use
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Repository\UtilisateursRepository;
+use PDO;
+use App\Repository\UtilisateursRepository;
 
 class ConnexionController extends AbstractController
 {
-    private PDO $pdo;
+    private \PDO $pdo;
 
     public function __construct() {
         $this->pdo = DBConnexion::getOrCreateInstance()->getPdo();
     }
 
     public function __invoke(): void {
+
         session_start();
 
         if (isset($_SESSION['user_id']) && !isset($_GET['redirect'])) {
-            $this->redirect('/collection');
+            $this->redirect('/');
         }
 
         $errors = [];
@@ -30,7 +32,7 @@ class ConnexionController extends AbstractController
             $success_message = "Connexion réussie ! Veuillez vous connecter.";
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
 
@@ -55,7 +57,7 @@ class ConnexionController extends AbstractController
                     $_SESSION['pseudo'] = $userRow['pseudo'];
                     $_SESSION['is_admin'] = (bool)$userRow['is_admin'];
 
-                    $this->redirect('/collection');
+                    $this->redirect('/');
                 }
             }
         }

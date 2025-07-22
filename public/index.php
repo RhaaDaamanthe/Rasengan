@@ -42,5 +42,11 @@ foreach (glob(__DIR__ . '/../routes/*.php') as $routeFile) {
 // Récupérer l'URL actuelle, sans query string
 $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+$basePath = '/rasengan';
+if (str_starts_with($url, $basePath)) {
+    $url = substr($url, strlen($basePath));
+    if ($url === '') $url = '/';
+}
+
 // Lancer le dispatch
 $router->dispatch($url);

@@ -1,8 +1,5 @@
 <?php
-require_once '../src/Initialisation/session_Auth.php';
 require_once '../src/Middleware/authRequired.php';
-$joueurs = require_once 'src/data/joueurs.php';
-requireLogin();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -20,7 +17,7 @@ requireLogin();
 <body>
 <header>
     <nav class="navbar">
-        <a href="public/index.php" class="logo">RASENGAN</a>
+        <a href="/" class="logo">RASENGAN</a>
         <div class="nav-links">
             <ul>
                 <li><a href="/">Accueil</a></li>
@@ -44,7 +41,7 @@ requireLogin();
         <div class="catalogue">
             <?php foreach ($joueurs as $joueur): ?>
                 <div class="card special-card" data-url="./Joueurs/<?= $joueur['nom'] ?>.php">
-                    <img src="./Images/Cartes/<?= $joueur['image'] ?>" alt="<?= htmlspecialchars($joueur['nom']) ?>">
+                    <img src="../../Images/Cartes/<?= $joueur['image'] ?>" alt="<?= htmlspecialchars($joueur['nom']) ?>">
                     <div class="card-content">
                         <h2 class="card-title"><?= htmlspecialchars($joueur['nom']) ?></h2>
                     </div>

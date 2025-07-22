@@ -3,13 +3,14 @@
 namespace App\Controller\Catalogue;
 
 use App\Controller\AbstractController;
-use Repository\CatalogueRepository;
-use Service\DBConnexion;
+use App\Repository\CatalogueRepository;
+use App\Database\DBConnexion;
 
 class CatalogueController extends AbstractController
 {
     public function __invoke(): void
     {
+        session_start();
         $this->requireLogin();
 
         $pdo = DBConnexion::getOrCreateInstance()->getPdo();
