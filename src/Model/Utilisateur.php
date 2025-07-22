@@ -7,22 +7,19 @@ class Utilisateur
     private int $id;
     private string $pseudo;
     private string $email;
-    private string $password;
     private bool $isAdmin;
 
     /**
      * @param int $id
      * @param string $pseudo
      * @param string $email
-     * @param string $password
      * @param bool $isAdmin
      */
-    public function __construct(int $id, string $pseudo, string $email, string $password, bool $isAdmin)
+    public function __construct(int $id, string $pseudo, string $email, bool $isAdmin)
     {
         $this->id = $id;
         $this->pseudo = $pseudo;
         $this->email = $email;
-        $this->password = $password;
         $this->isAdmin = $isAdmin;
     }
 
@@ -54,16 +51,6 @@ class Utilisateur
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
     }
 
     public function isAdmin(): bool
