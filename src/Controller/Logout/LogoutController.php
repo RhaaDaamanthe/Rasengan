@@ -2,11 +2,30 @@
 
 namespace App\Controller\Logout;
 
-class LogoutController
+use App\Controller\AbstractController;
+
+class LogoutController extends AbstractController
 {
     public function __invoke(): void
     {
-        //on récupère la collection des joueurs
-         require_once __DIR__ . '/../../../public/Html/Logout/logout.php';
+        session_start();
+
+        //suppression des variables de la session
+        $_SESSION = [];
+
+        //destruction de la session
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+
+        session_destroy();
+
+        //redirection vers la page de connexion
+        header("Location: /connexion");
+        exit;
     }
 }
