@@ -1,61 +1,3 @@
-<?php
-require_once '../src/Initialisation/session_Auth.php';
-require_once '../src/Middleware/authRequired.php';
-
-if (isset($_SESSION['user_id'])) {
-    header("Location: /");
-    exit;
-}
-
-$errors = [];
-$pseudo = '';
-$email = '';
-
-if (isset($_POST['envoi'])) {
-    $pseudo = trim($_POST['pseudo']);
-    $email = trim($_POST['email']);
-    $password1 = $_POST['password1'] ?? '';
-    $password2 = $_POST['password2'] ?? '';
-
-    // 🔒 Validation
-    if (empty($pseudo) || strlen($pseudo) < 3) {
-        $errors[] = "Le pseudo doit contenir au moins 3 caractères.";
-    }
-
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "L'email n'est pas valide.";
-    } else {
-        // Vérifier si l'email est déjà pris
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM utilisateurs WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->fetchColumn() > 0) {
-            $errors[] = "Cet email est déjà utilisé.";
-        }
-    }
-
-    if (strlen($password1) < 8) {
-        $errors[] = "Le mot de passe doit contenir au moins 8 caractères.";
-    }
-
-    if ($password1 !== $password2) {
-        $errors[] = "Les mots de passe ne correspondent pas.";
-    }
-
-    // ✅ Inscription
-    if (empty($errors)) {
-        $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
-        try {
-            $stmt = $pdo->prepare("INSERT INTO utilisateurs (pseudo, email, password) VALUES (?, ?, ?)");
-            $stmt->execute([$pseudo, $email, $hashed_password]);
-            header("Location: compte.php?success=1");
-            exit;
-        } catch (PDOException $e) {
-            error_log("Erreur d'inscription : " . $e->getMessage());
-            $errors[] = "Une erreur est survenue. Veuillez réessayer plus tard.";
-        }
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,14 +25,14 @@ if (isset($_POST['envoi'])) {
 <body>
 <header>
       <nav class="navbar">
-        <a href="public/index.php" class="logo">RASENGAN</a>
+        <a href="/" class="logo">RASENGAN</a>
         <div class="nav-links">
           <ul>
-            <li><a href="public/index.php">Accueil</a></li>
-            <li><a href="catalogue.php">Catalogue</a></li>
-            <li><a href="collection.php">Collection des joueurs</a></li>
-            <li><a href="compte.php">Connexion</a></li>
-            <li class="active"><a href="inscription.php">Inscription</a></li>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/catalogue">Catalogue</a></li>
+            <li><a href="/collection">Collection des joueurs</a></li>
+            <li><a href="/compte">Connexion</a></li>
+            <li class="active"><a href="/inscription">Inscription</a></li>
           </ul>
         </div>
         <img
@@ -135,6 +77,6 @@ if (isset($_POST['envoi'])) {
       <p>© 2024 - Rasengan</p>
       <a href="https://discord.gg/kyfQZbnkjy" target="_blank"> Rejoindre</a>
     </footer>
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
