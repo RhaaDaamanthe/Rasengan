@@ -7,4 +7,4 @@ $router->get('/compte/:id', AccountController::class);
 $router->post('/compte/update', UpdateAccountController::class);
 
 //route pour accéder au profil d'un utilisateur en read-only
-$router->get('/compte/:id', AccountViewerController::class);
+$router->get('/compte/viewer/:id', AccountViewerController::class);
