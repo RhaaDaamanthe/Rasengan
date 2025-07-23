@@ -32,6 +32,27 @@ class UtilisateursRepository
         return $utilisateurs;
     }
 
+    public function getUserById(int $id): ?Utilisateur
+    {
+    $stmt = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        return new Utilisateur(
+            id: (int) $row['id'],
+            pseudo: $row['pseudo'],
+            email: $row['email'],
+            password: $row['password'],
+            isAdmin: (bool) $row['is_admin']
+            );
+        }
+
+    return null;
+    }    
+
+
     //fonction pour vérifier la bonne connexion de l'utilisateur
     public function verifConnexion(string $login, string $password): ?Utilisateur
     {
