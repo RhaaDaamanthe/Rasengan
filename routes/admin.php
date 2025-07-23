@@ -16,6 +16,12 @@ use App\Controller\Admin\FilmCard\UpdateFilmCardFormController;
 use App\Controller\Admin\FilmCard\UpdateFilmCardSubmitController;
 use App\Controller\Admin\FilmCard\DeleteFilmCardController;
 
+// 📁 Badge
+use App\Controller\Admin\Badge\ListBadgeController;
+use App\Controller\Admin\Badge\CreateBadgeController;
+use App\Controller\Admin\Badge\AddUserBadgeController;
+
+
 // === Routes Admin Anime ===
 $router->get('/admin/anime-cartes', ListAnimeCardController::class);
 $router->get('/admin/anime-cartes/ajouter', CreateAnimeCardFormController::class);
@@ -31,3 +37,12 @@ $router->post('/admin/film-cartes/ajouter', CreateFilmCardSubmitController::clas
 $router->get('/admin/film-cartes/modifier/:id', UpdateFilmCardFormController::class);
 $router->post('/admin/film-cartes/modifier/:id', UpdateFilmCardSubmitController::class);
 $router->post('/admin/film-cartes/supprimer/:id', DeleteFilmCardController::class);
+
+// === Routes Admin Badge ===
+$router->get('/admin/badge', ListBadgeController::class);
+$router->post('/admin/badge/creer', CreateBadgeController::class);
+$router->post('/admin/badge/ajouter', AddUserBadgeController::class);
+
+
+
+
