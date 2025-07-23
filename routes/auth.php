@@ -2,7 +2,7 @@
 
 use App\Controller\Authentification\InscriptionController;
 use App\Controller\Authentification\ConnexionController;
-use App\Controller\Authentification\LogoutController;
+use App\Controller\Logout\LogoutController;
 
 $router->get('/inscription', InscriptionController::class);
 $router->post('/inscription', InscriptionController::class);
