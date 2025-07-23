@@ -52,6 +52,10 @@ CREATE TABLE IF NOT EXISTS `utilisateurs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `pseudo` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `image_collection` varchar(255),
+  `titre_collection` varchar(100),
+  `date_creation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `is_admin` tinyint DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -74,6 +78,39 @@ CREATE TABLE IF NOT EXISTS `utilisateurs_cartes_films` (
   `quantite` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`,`carte_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE utilisateurs_cartes_favori (
+  user_id INT NOT NULL,
+  carte_id INT NOT NULL,
+  type ENUM('anime', 'film') NOT NULL,
+  PRIMARY KEY (user_id, carte_id, type)
+);
+
+CREATE TABLE utilisateurs_cartes_wishlist (
+  user_id INT NOT NULL,
+  carte_id INT NOT NULL,
+  type ENUM('anime', 'film') NOT NULL,
+  PRIMARY KEY (user_id, carte_id, type)
+);
+
+CREATE TABLE badges (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nom VARCHAR(100) NOT NULL,
+  description TEXT,
+  image_path VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE utilisateurs_badges (
+  user_id INT NOT NULL,
+  badge_id INT NOT NULL,
+  date_obtention DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, badge_id),
+  FOREIGN KEY (user_id) REFERENCES utilisateurs(id),
+  FOREIGN KEY (badge_id) REFERENCES badges(id)
+);
+
+
+
 
 ALTER TABLE `cartes_films`
   ADD CONSTRAINT `fk_film` FOREIGN KEY (`id_film`) REFERENCES `films` (`id`);
