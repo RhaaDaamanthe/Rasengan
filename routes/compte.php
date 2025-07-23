@@ -2,4 +2,4 @@
 
 use App\Controller\Compte\AccountController;
 
-$router->get('/compte', AccountController::class);
+$router->get('/compte/:id', AccountController::class);
