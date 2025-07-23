@@ -10,4 +10,4 @@ $router->post('/compte/update', UpdateAccountController::class);
 $router->get('/compte/viewer/:id', AccountViewerController::class);
 
 //route pour voir tous les badges de l'utilisateur
-$router->get('/profil/badge', ListUserBadgeController::class);
+$router->get('/compte/badge', ListUserBadgeController::class);
