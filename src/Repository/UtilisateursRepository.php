@@ -24,7 +24,6 @@ class UtilisateursRepository
                 (int)$row['id'],
                 $row['pseudo'],
                 $row['email'],
-                $row['password'],
                 (bool)$row['is_admin']
             );
         }
@@ -44,7 +43,6 @@ class UtilisateursRepository
             id: (int) $row['id'],
             pseudo: $row['pseudo'],
             email: $row['email'],
-            password: $row['password'],
             isAdmin: (bool) $row['is_admin']
             );
         }
