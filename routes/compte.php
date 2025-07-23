@@ -8,3 +8,6 @@ $router->post('/compte/update', UpdateAccountController::class);
 
 //route pour accéder au profil d'un utilisateur en read-only
 $router->get('/compte/viewer/:id', AccountViewerController::class);
+
+//route pour voir tous les badges de l'utilisateur
+$router->get('/profil/badge', ListUserBadgeController::class);
