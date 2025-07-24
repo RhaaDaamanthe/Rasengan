@@ -131,4 +131,60 @@ class CarteFilmRepository
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'film');
     }
 
+    public function getAllCartesFilmWithRarityInfo(): array
+    {
+        $sql = "SELECT cf.id, cf.nom, cf.id_rarete, cf.image_path, cf.description,
+                       f.nom AS film, r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                FROM cartes_films cf
+                JOIN raretes r ON cf.id_rarete = r.id_rarete
+                LEFT JOIN films f ON cf.id_film = f.id
+                ORDER BY cf.id_rarete DESC, cf.id ASC";
+    
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+    
+        $cartes = [];
+    
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $rarete = new Rarete(
+                (int)$row['id_rarete'],
+                (int)$row['quantite_max'],
+                $row['rarete_libelle']
+            );
+    
+            $carte = new CarteFilm(
+                (int)$row['id'],
+                $row['nom'],
+                $row['film'],
+                $rarete,
+                $row['image_path'],
+                $row['description'] ?? null,
+                null,
+                0
+            );
+    
+            if (in_array($rarete->getId(), [6, 5, 4])) {
+                $stmt2 = $this->pdo->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id WHERE uc.carte_id = ? LIMIT 1");
+                $stmt2->execute([$row['id']]);
+                $carte->setInfoSup($stmt2->fetchColumn() ?: 'Aucun');
+    
+            } elseif (in_array($rarete->getId(), [3, 2, 1])) {
+                $stmt3 = $this->pdo->prepare("SELECT SUM(quantite) as total FROM utilisateurs_cartes_films WHERE carte_id = ?");
+                $stmt3->execute([$row['id']]);
+                $total = $stmt3->fetchColumn() ?: 0;
+                $max = ($rarete->getId() === 3) ? 2 : 3;
+                $carte->setInfoSup("Prises : $total/$max");
+    
+                $stmt4 = $this->pdo->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id WHERE uc.carte_id = ?");
+                $stmt4->execute([$row['id']]);
+                $carte->setOwners($stmt4->fetchAll(PDO::FETCH_COLUMN));
+            }
+    
+            $cartes[] = $carte;
+        }
+    
+        return $cartes;
+    }
+
+
 }
