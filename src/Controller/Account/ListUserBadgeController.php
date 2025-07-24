@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Badge;
+namespace App\Controller\Account;
 
 use App\Controller\AbstractController;
 use App\Repository\BadgeRepository;
