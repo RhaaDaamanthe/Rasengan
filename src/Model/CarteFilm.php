@@ -12,6 +12,10 @@ class CarteFilm
     private ?string $description;
     private ?string $proprietaire;
     private int $quantiteActuelle;
+    
+    //carte film /catalogue
+    private ?string $infoSup = null;
+    private array $owners = [];
 
     /**
      * @param int $id
@@ -115,6 +119,25 @@ class CarteFilm
         $this->quantiteActuelle = $quantiteActuelle;
     }
 
+    public function setInfoSup(string $infoSup): void 
+    {
+        $this->infoSup = $infoSup;
+    }
+
+    public function getInfoSup(): ?string 
+    {
+        return $this->infoSup;
+    }
+
+    public function setOwners(array $owners): void 
+    {
+        $this->owners = $owners;
+    }
+
+    public function getOwners(): array 
+    {
+        return $this->owners;
+    }
 
 
 }
