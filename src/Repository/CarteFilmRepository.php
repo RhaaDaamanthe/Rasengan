@@ -3,6 +3,7 @@
 namespace Repository;
 
 use Model\CarteFilm;
+use Model\Film;
 use Model\Rarete;
 use PDO;
 require_once __DIR__ . '/../Model/CarteFilm.php';
@@ -46,6 +47,46 @@ class CarteFilmRepository
         return $cartes;
     }
 
+    public function getById(int $id): ?CarteFilm
+    {
+        $query = "SELECT cf.*, f.id AS film_id, f.nom AS film_nom,
+                         r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
+                  FROM cartes_films cf
+                  JOIN films f ON cf.id_film = f.id
+                  JOIN raretes r ON cf.id_rarete = r.id_rarete
+                  WHERE cf.id = :id";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $rarete = new Rarete(
+                (int)$row['rarete_id'],
+                (int)$row['quantite_max'],
+                $row['libelle']
+            );
+
+            $film = new Film(
+                (int)$row['film_id'],
+                $row['film_nom']
+            );
+
+            return new CarteFilm(
+                (int)$row['id'],
+                $row['nom'],
+                $film,
+                $rarete,
+                $row['image_path'],
+                $row['description'] ?? null,
+                null,
+                0
+            );
+        }
+
+        return null;
+    }
+
     public function getByIdFilm(int $id): ?CarteFilm {
         $query = 'SELECT cf.*, r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
                   FROM cartes_films cf
@@ -78,50 +119,50 @@ class CarteFilmRepository
         return null;
     }
 
-    public function insertCarteFilm(CarteFilm $carte): bool {
+    public function insertCarteFilm(CarteFilm $carte): bool
+    {
         $query = 'INSERT INTO cartes_films 
-                  (nom, film, id_rarete, image_path, description) 
+                  (nom, id_film, id_rarete, image_path, description) 
                   VALUES 
-                  (:nom, :film, :id_rarete, :image_path, :description);';
+                  (:nom, :id_film, :id_rarete, :image_path, :description)';
 
-        $queryPrep = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare($query);
 
-        return $queryPrep->execute([
+        return $stmt->execute([
             ':nom'         => $carte->getNom(),
-            ':film'        => $carte->getFilm(),
+            ':id_film'     => $carte->getFilm()->getId(),
             ':id_rarete'   => $carte->getRarete()->getId(),
             ':image_path'  => $carte->getImagePath(),
             ':description' => $carte->getDescription(),
         ]);
     }
 
-    public function updateCarteFilm(CarteFilm $carte): bool {
+    public function updateCarteFilm(CarteFilm $carte): bool
+    {
         $query = 'UPDATE cartes_films 
-                  SET 
-                      nom         = :nom,
-                      film        = :film,
-                      id_rarete   = :id_rarete,
-                      image_path  = :image_path,
+                  SET nom = :nom,
+                      id_film = :id_film,
+                      id_rarete = :id_rarete,
+                      image_path = :image_path,
                       description = :description
-                  WHERE id = :id;';
+                  WHERE id = :id';
 
-        $queryPrep = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare($query);
 
-        return $queryPrep->execute([
+        return $stmt->execute([
             ':id'          => $carte->getId(),
             ':nom'         => $carte->getNom(),
-            ':film'        => $carte->getFilm(),
+            ':id_film'     => $carte->getFilm()->getId(),
             ':id_rarete'   => $carte->getRarete()->getId(),
             ':image_path'  => $carte->getImagePath(),
             ':description' => $carte->getDescription(),
         ]);
     }
 
-    public function deleteCarteFilm(int $id): bool {
-        $query = 'DELETE FROM cartes_films WHERE id = :id;';
-        $queryPrep = $this->pdo->prepare($query);
-
-        return $queryPrep->execute([':id' => $id]);
+    public function deleteCarteFilm(int $id): bool
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM cartes_films WHERE id = :id');
+        return $stmt->execute([':id' => $id]);
     }
 
     public function getAllDistinctFilms(): array {
