@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
@@ -18,6 +18,6 @@ class ListAnimeCardController extends AbstractController
         $repo = new CarteAnimeRepository($pdo);
         $cartes = $repo->getAllCartesWithRarityInfo();
 
-        require_once __DIR__ . '/../../../public/Html/admin/list-anime-cards.php';
+        require_once __DIR__ . '/../../../public/Html/Admin/AdminCardAnimeViewer.php';
     }
 }

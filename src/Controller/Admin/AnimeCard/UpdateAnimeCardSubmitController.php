@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Model\CarteAnime;
 use Model\Rarete;
 use Repository\CarteAnimeRepository;
+use Repository\AnimeRepository;
 
 class UpdateAnimeCardSubmitController extends AbstractController
 {
@@ -25,22 +25,25 @@ class UpdateAnimeCardSubmitController extends AbstractController
         $id = (int)$params['id'];
         $nom = $_POST['nom'] ?? '';
         $description = $_POST['description'] ?? '';
-        $anime = $_POST['anime'] ?? '';
+        $animeId = (int)($_POST['anime'] ?? 0);
         $rareteId = (int)($_POST['id_rarete'] ?? 6);
 
-        if (!$nom || !$anime || !$rareteId) {
+        if (!$nom || !$animeId || !$rareteId) {
             http_response_code(400);
             echo "Champs manquants.";
             exit;
         }
 
         $pdo = DBConnexion::getOrCreateInstance()->getPdo();
-        $repo = new CarteAnimeRepository($pdo);
-        $carteExistante = $repo->getByIdAnime($id);
+        $carteRepo = new CarteAnimeRepository($pdo);
+        $animeRepo = new AnimeRepository($pdo);
 
-        if (!$carteExistante) {
+        $carteExistante = $carteRepo->getByIdAnime($id);
+        $anime = $animeRepo->getById($animeId);
+
+        if (!$carteExistante || !$anime) {
             http_response_code(404);
-            echo "Carte introuvable.";
+            echo "Carte ou anime introuvable.";
             exit;
         }
 
@@ -56,19 +59,17 @@ class UpdateAnimeCardSubmitController extends AbstractController
             move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
         }
 
-        $carte = new CarteAnime(
-            id: $id,
-            nom: $nom,
-            anime: $anime,
-            rarete: new Rarete($rareteId, 0, ''),
-            imagePath: $imagePath,
-            description: $description,
-            infoSup: null,
-            quantitePossedee: 0
-        );
+        // Modification directe de l'objet existant
+        $carteExistante->setNom($nom);
+        $carteExistante->setDescription($description);
+        $carteExistante->setAnime($anime);
+        $carteExistante->setRarete(new Rarete($rareteId, 0, ''));
+        $carteExistante->setImagePath($imagePath);
+        $carteExistante->setProprietaire(null);
+        $carteExistante->setQuantiteActuelle(0);
 
-        $repo->updateCarteAnime($carte);
+        $carteRepo->updateCarteAnime($carteExistante);
 
-        $this->redirect('/admin/anime-cartes');
+        $this->redirect('/Admin/anime-cartes');
     }
 }

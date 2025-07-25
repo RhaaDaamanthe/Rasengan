@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use App\Repository\AnimeRepository;
+use Repository\AnimeRepository;
+use Repository\RareteRepository;
 
 class CreateAnimeCardFormController extends AbstractController
 {
@@ -15,9 +16,14 @@ class CreateAnimeCardFormController extends AbstractController
         $this->requireAdmin();
 
         $pdo = DBConnexion::getOrCreateInstance()->getPdo();
-        $animeRepo = new AnimeRepository($pdo);
-        $animes = $animeRepo->findAll();
 
-        require_once __DIR__ . '/../../../public/Html/admin/anime-card-form.php';
+        $animeRepo = new AnimeRepository($pdo);
+        $rareteRepo = new RareteRepository($pdo);
+
+        $animes = $animeRepo->getAllAnime();
+        $raretes = $rareteRepo->getAllRaretes();
+
+        require_once __DIR__ . '/../../../public/Html/Admin/Forms/FormulaireInsertUpdateAnime.php';
     }
 }
+        

@@ -31,6 +31,23 @@ class AnimeRepository
         return $raretes;
     }
 
+    public function getById(int $id): ?Anime
+    {
+        $query = "SELECT * FROM animes WHERE id = :id LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new Anime(
+                (int)$row['id'],
+                $row['nom']
+            );
+        }
+
+        return null;
+    }
+
     //pour catalogue, permet de compter le nombre de cartes anime
     public function getAnimesWithCardCount(): array
     {

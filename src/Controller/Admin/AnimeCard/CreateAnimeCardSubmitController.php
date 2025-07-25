@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
 use Model\CarteAnime;
-use Model\Rarete;
 use Repository\CarteAnimeRepository;
+use Repository\AnimeRepository;
+use Repository\RareteRepository;
 
 class CreateAnimeCardSubmitController extends AbstractController
 {
@@ -24,10 +25,10 @@ class CreateAnimeCardSubmitController extends AbstractController
 
         $nom = $_POST['nom'] ?? '';
         $description = $_POST['description'] ?? '';
-        $quantite = (int) ($_POST['quantite'] ?? 1);
-        $anime = $_POST['anime'] ?? '';
+        $animeId = (int) ($_POST['anime'] ?? 0);
+        $rareteId = (int) ($_POST['id_rarete'] ?? 0);
 
-        if (!$nom || !$anime) {
+        if (!$nom || !$animeId || !$rareteId) {
             http_response_code(400);
             echo "Champs obligatoires manquants.";
             exit;
@@ -45,24 +46,33 @@ class CreateAnimeCardSubmitController extends AbstractController
             move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
         }
 
-        // Création de la carte avec rareté Event (id 6)
-        $rarete = new Rarete(6, 1, 'Event');
+        $pdo = DBConnexion::getOrCreateInstance()->getPdo();
+        $animeRepo = new AnimeRepository($pdo);
+        $rareteRepo = new RareteRepository($pdo);
+        $carteRepo = new CarteAnimeRepository($pdo);
+
+        $anime = $animeRepo->getById($animeId);
+        $rarete = $rareteRepo->getById($rareteId);
+
+        if (!$anime || !$rarete) {
+            http_response_code(404);
+            echo "Anime ou rareté introuvable.";
+            exit;
+        }
 
         $carte = new CarteAnime(
-            id: null,
+            id: 0,
             nom: $nom,
             anime: $anime,
             rarete: $rarete,
             imagePath: $imagePath,
             description: $description,
-            infoSup: null,
-            quantitePossedee: $quantite
+            proprietaire: null,
+            quantiteActuelle: 0
         );
 
-        $pdo = DBConnexion::getOrCreateInstance()->getPdo();
-        $repo = new CarteAnimeRepository($pdo);
-        $repo->insertCarteAnime($carte);
+        $carteRepo->insertCarteAnime($carte);
 
-        $this->redirect('/admin/anime-cartes');
+        $this->redirect('/Admin/admin-cartes');
     }
 }

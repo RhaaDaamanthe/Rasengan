@@ -31,4 +31,22 @@ class RareteRepository
 
         return $raretes;
     }
+
+    public function getById(int $id): ?Rarete
+    {
+        $query = "SELECT * FROM raretes WHERE id_rarete = :id LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new Rarete(
+                (int)$row['id_rarete'],
+                (int)$row['quantite'],
+                $row['libelle'],
+            );
+        }
+
+        return null;
+    }
 }

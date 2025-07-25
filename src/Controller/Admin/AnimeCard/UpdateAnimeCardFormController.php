@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
@@ -30,6 +30,6 @@ class UpdateAnimeCardFormController extends AbstractController
             exit;
         }
 
-        require_once __DIR__ . '/../../../public/Html/admin/anime-card-edit-form.php';
+        require_once __DIR__ . '/../../../public/Html/Admin/FormulaireInsertUpdateAnime.php';
     }
 }

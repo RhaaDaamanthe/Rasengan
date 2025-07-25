@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
@@ -40,7 +40,7 @@ class DeleteAnimeCardController extends AbstractController
             exit;
         }
 
-        $this->redirect('/admin/anime-cartes');
+        $this->redirect('/Admin/anime-cartes');
     }
 }
 

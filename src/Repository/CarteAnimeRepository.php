@@ -137,6 +137,48 @@ class CarteAnimeRepository
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'anime');
     }
 
+    public function getById(int $id): ?CarteAnime
+    {
+        $sql = "SELECT ca.*, 
+                r.id_rarete AS rarete_id, r.libelle AS rarete_libelle, r.quantite AS quantite_max,
+                a.id AS anime_id, a.nom AS anime_nom
+                FROM cartes_animes ca
+                JOIN raretes r ON ca.id_rarete = r.id_rarete
+                LEFT JOIN animes a ON ca.id_anime = a.id
+                WHERE ca.id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $rarete = new Rarete(
+                (int)$row['rarete_id'],
+                (int)$row['quantite_max'],
+                $row['rarete_libelle']
+            );
+
+            $anime = new \Model\Anime(
+                (int)$row['anime_id'],
+                $row['anime_nom']
+            );
+
+            return new CarteAnime(
+                id: (int)$row['id'],
+                nom: $row['nom'],
+                anime: $anime,
+                rarete: $rarete,
+                imagePath: $row['image_path'],
+                description: $row['description'] ?? null,
+                proprietaire: null,
+                quantiteActuelle: 0
+            );
+        }
+
+        return null;
+    }
+
+
     public function getAllCartesWithRarityInfo(): array
     {
         $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.image_path, ca.description,
