@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller\Account;
-//Permet à l'utilisateur de mettre à jour son compte, comme changer son pseudo, sa description, etc.
+namespace App\Controller\Collection\PlayerCollection;
+//Affiche toutes les carte film d'un joueur
 //use
 use App\Controller\AbstractController;
 
-class UpdateAccountController extends AbstractController
+class CollectionPlayerFilmController extends AbstractController
 {
     public function __invoke(): void
     {

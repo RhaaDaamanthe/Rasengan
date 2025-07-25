@@ -1,6 +1,14 @@
 <?php
 
-use App\Controller\Compte\AccountController;
+// 📁 Profil du joueur
+use App\Controller\Account\AccountController;
+use App\Controller\Account\UpdateAccountController;
+
+// 📁 Profil d'un autre joueur
+use App\Controller\Account\AccountViewerController;
+
+// 📁 Badge du joueur
+use App\Controller\Account\ListUserBadgeController;
 
 //route pour accéder au profil de l'utilisateur
 $router->get('/compte/:id', AccountController::class);

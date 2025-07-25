@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller\Account;
-//Permet à l'utilisateur de mettre à jour son compte, comme changer son pseudo, sa description, etc.
+namespace App\Controller\Player;
+//Il s'agit du controller pour voir en read-only les profils des autres joueurs
 //use
 use App\Controller\AbstractController;
 
-class UpdateAccountController extends AbstractController
+class PlayerViewPlayer extends AbstractController
 {
     public function __invoke(): void
     {
