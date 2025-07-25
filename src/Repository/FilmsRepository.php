@@ -31,6 +31,23 @@ class FilmsRepository
         return $raretes;
     }
 
+    public function getById(int $id): ?Film
+    {
+        $query = "SELECT * FROM films WHERE id = :id LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new Film(
+                (int)$row['id'],
+                $row['nom']
+            );
+        }
+
+        return null;
+    }
+
     //permet de compter le nombre de carte film, utilisé dans catalogue
     public function getFilmsWithCardCount(): array
     {

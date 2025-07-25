@@ -17,25 +17,34 @@ class CarteFilmRepository
 
     public function getAllCarteFilm(): array
     {
-        $query = "SELECT cf.*, r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
-              FROM cartes_films cf
-              JOIN raretes r ON cf.id_rarete = r.id_rarete;";
+        $query = "SELECT cf.*, f.id AS film_id, f.nom AS film_nom,
+                         r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
+                  FROM cartes_films cf
+                  JOIN films f ON cf.id_film = f.id
+                  JOIN raretes r ON cf.id_rarete = r.id_rarete
+                  ORDER BY cf.id";
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
         $cartes = [];
+
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $rarete = new Rarete(
                 (int)$row['rarete_id'],
                 (int)$row['quantite_max'],
                 $row['libelle']
+            );
 
+            $film = new Film(
+                (int)$row['film_id'],
+                $row['film_nom']
             );
 
             $cartes[] = new CarteFilm(
                 (int)$row['id'],
                 $row['nom'],
-                $row['film'],
+                $film,
                 $rarete,
                 $row['image_path'],
                 $row['description'] ?? null,
