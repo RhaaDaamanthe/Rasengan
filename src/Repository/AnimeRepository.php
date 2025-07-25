@@ -1,10 +1,10 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Model\Anime;
 use PDO;
-require_once __DIR__ . '/../Model/Anime.php';
+
 
 class AnimeRepository
 {

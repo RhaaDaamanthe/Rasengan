@@ -3,7 +3,7 @@
 namespace Repository;
 require_once __DIR__ . '/../Model/Film.php';
 
-use Model\Film;
+use App\Model\Film;
 use PDO;
 
 class FilmsRepository

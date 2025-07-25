@@ -18,6 +18,7 @@
       <div class="nav-links">
         <ul>
           <li class="active"><a href="/">Accueil</a></li>
+          <li><a href="/admin">prout</a></li>
           <li><a href="/catalogue">Catalogue</a></li>
           <li><a href="/collection">Collection des joueurs</a></li>
           <?php if (isset($_SESSION['user_id'])): ?>
@@ -26,6 +27,7 @@
           <?php else: ?>
             <li><a href="/connexion">Connexion</a></li>
             <li><a href="/inscription">Inscription</a></li>
+            
           <?php endif; ?>
         </ul>
       </div>

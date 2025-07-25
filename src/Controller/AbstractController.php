@@ -16,7 +16,7 @@ abstract class AbstractController
 
     protected function requireAdmin(): void
     {
-        if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+        if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
             http_response_code(403);
             echo "Accès interdit.";
             exit;

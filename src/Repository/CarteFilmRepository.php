@@ -1,12 +1,12 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
-use Model\CarteFilm;
-use Model\Film;
-use Model\Rarete;
+use App\Model\CarteFilm;
+use App\Model\Film;
+use App\Model\Rarete;
 use PDO;
-require_once __DIR__ . '/../Model/CarteFilm.php';
+
 class CarteFilmRepository
 {
     private PDO $pdo;
@@ -18,7 +18,7 @@ class CarteFilmRepository
     public function getAllCarteFilm(): array
     {
         $query = "SELECT cf.*, f.id AS film_id, f.nom AS film_nom,
-                         r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
+                        r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
                   FROM cartes_films cf
                   JOIN films f ON cf.id_film = f.id
                   JOIN raretes r ON cf.id_rarete = r.id_rarete

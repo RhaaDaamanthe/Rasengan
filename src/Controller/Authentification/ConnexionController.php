@@ -55,7 +55,8 @@ class ConnexionController extends AbstractController
                 } else {
                     $_SESSION['user_id'] = $userRow['id'];
                     $_SESSION['pseudo'] = $userRow['pseudo'];
-                    $_SESSION['is_admin'] = (bool)$userRow['is_admin'];
+                    $_SESSION['is_admin'] = (int)$userRow['is_admin'];
+
 
                     $this->redirect('/');
                 }

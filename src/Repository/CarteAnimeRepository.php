@@ -1,11 +1,14 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
-use Model\CarteAnime;
-use Model\Rarete;
+
+use App\Model\CarteAnime;
+use App\Model\Rarete;
+use App\Model\Anime;
 use PDO;
-require_once __DIR__ . '/../Model/CarteAnime.php';
+
+
 
 class CarteAnimeRepository
 {
@@ -18,8 +21,8 @@ class CarteAnimeRepository
         public function getAllCarteAnime(): array
         {
             $query = "SELECT ca.*, r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
-                  FROM cartes_animes ca
-                  JOIN raretes r ON ca.id_rarete = r.id_rarete;";
+                FROM cartes_animes ca
+                JOIN raretes r ON ca.id_rarete = r.id_rarete;";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
 
@@ -80,9 +83,9 @@ class CarteAnimeRepository
     public function insertCarteAnime(CarteAnime $carte): bool
     {
         $query = 'INSERT INTO cartes_animes 
-              (nom, anime, id_rarete, image_path, description) 
-              VALUES 
-              (:nom, :anime, :id_rarete, :image_path, :description);';
+            (nom, anime, id_rarete, image_path, description) 
+            VALUES 
+            (:nom, :anime, :id_rarete, :image_path, :description);';
 
         $queryPrep = $this->pdo->prepare($query);
 
@@ -100,13 +103,13 @@ class CarteAnimeRepository
     public function updateCarteAnime(CarteAnime $carte): bool
     {
         $query = 'UPDATE cartes_animes 
-              SET 
-                  nom         = :nom,
-                  anime       = :anime,
-                  id_rarete   = :id_rarete,
-                  image_path  = :image_path,
-                  description = :description
-              WHERE id = :id;';
+            SET 
+                nom         = :nom,
+                anime       = :anime,
+                id_rarete   = :id_rarete,
+                image_path  = :image_path,
+                description = :description
+            WHERE id = :id;';
 
         $queryPrep = $this->pdo->prepare($query);
 
@@ -182,56 +185,78 @@ class CarteAnimeRepository
     public function getAllCartesWithRarityInfo(): array
     {
         $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.image_path, ca.description,
-                       a.nom AS anime, r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                a.id AS anime_id, a.nom AS anime_nom,
+                r.libelle AS rarete_libelle, r.quantite AS quantite_max
                 FROM cartes_animes ca
                 JOIN raretes r ON ca.id_rarete = r.id_rarete
                 LEFT JOIN animes a ON ca.id_anime = a.id
                 ORDER BY ca.id_rarete DESC, ca.id ASC";
-    
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
-    
+
         $cartes = [];
-    
+
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $rarete = new Rarete(
                 (int)$row['id_rarete'],
                 (int)$row['quantite_max'],
                 $row['rarete_libelle']
             );
-    
+
+            $anime = new Anime(
+                (int)($row['anime_id'] ?? 0),
+                $row['anime_nom'] ?? 'Inconnu'
+            );
+
             $carte = new CarteAnime(
                 (int)$row['id'],
                 $row['nom'],
-                $row['anime'],
+                $anime,
                 $rarete,
                 $row['image_path'],
                 $row['description'] ?? null,
                 null,
                 0
             );
-    
+
             // Ajout des infos supplémentaires
             if (in_array($rarete->getId(), [6, 5, 4])) {
-                $stmt2 = $this->pdo->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id WHERE uc.carte_id = ? LIMIT 1");
+                $stmt2 = $this->pdo->prepare("
+                    SELECT u.pseudo 
+                    FROM utilisateurs u 
+                    JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id 
+                    WHERE uc.carte_id = ? 
+                    LIMIT 1
+                ");
                 $stmt2->execute([$row['id']]);
                 $carte->setInfoSup($stmt2->fetchColumn() ?: 'Aucun');
-    
+
             } elseif (in_array($rarete->getId(), [3, 2, 1])) {
-                $stmt3 = $this->pdo->prepare("SELECT SUM(quantite) as total FROM utilisateurs_cartes_animes WHERE carte_id = ?");
+                $stmt3 = $this->pdo->prepare("
+                    SELECT SUM(quantite) as total 
+                    FROM utilisateurs_cartes_animes 
+                    WHERE carte_id = ?
+                ");
                 $stmt3->execute([$row['id']]);
                 $total = $stmt3->fetchColumn() ?: 0;
                 $max = ($rarete->getId() === 3) ? 2 : 3;
                 $carte->setInfoSup("Prises : $total/$max");
-    
-                $stmt4 = $this->pdo->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id WHERE uc.carte_id = ?");
+
+                $stmt4 = $this->pdo->prepare("
+                    SELECT u.pseudo 
+                    FROM utilisateurs u 
+                    JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id 
+                    WHERE uc.carte_id = ?
+                ");
                 $stmt4->execute([$row['id']]);
                 $carte->setOwners($stmt4->fetchAll(PDO::FETCH_COLUMN));
             }
-    
+
             $cartes[] = $carte;
         }
-    
+
         return $cartes;
     }
+
 }

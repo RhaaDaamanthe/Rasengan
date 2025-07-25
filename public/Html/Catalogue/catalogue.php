@@ -41,13 +41,13 @@
 <main>
     <h1>Catalogue des cartes</h1>
     <div class="main-catalogue">
-        <div class="card" data-url="/cartes/anime">
+        <div class="card" data-url="/catalogue/anime">
             <img src="/Images/anime_catalogue.jpg" alt="Animés"/>
             <div class="card-content">
                 <h2 class="card-title">Cartes animés</h2>
             </div>
         </div>
-        <div class="card" data-url="/cartes/film">
+        <div class="card" data-url="/catalogue/film">
             <img src="/Images/film_catalogue.jpg" alt="Films & séries" />
             <div class="card-content">
                 <h2 class="card-title">Cartes films & séries</h2>

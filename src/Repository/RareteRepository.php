@@ -1,10 +1,9 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 
 use Model\Rarete;
 use PDO;
-require_once __DIR__ . '/../Model/Rarete.php';
 
 class RareteRepository
 {

@@ -3,16 +3,23 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AbstractController;
+use App\Database\DBConnexion;
 
-class AdminDashboardController extends AbstractController
+class ViewAdminDashboardController extends AbstractController
 {
     public function __invoke(): void
     {
-        session_start();
+        
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $this->requireLogin();
         $this->requireAdmin();
 
-        // Affiche la page HTML de configuration admin
-        require_once __DIR__ . '/../../../public/Html/admin/dashboard.php';
+        // Connexion à la base de données
+        $pdo = DBConnexion::getOrCreateInstance()->getPdo();
+
+        require_once __DIR__ . '/../../../public/Html/Admin/dashboard.php';
     }
 }

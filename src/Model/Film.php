@@ -1,7 +1,7 @@
 <?php
 
-namespace Model;
-require_once __DIR__ . '/../Model/Film.php';
+namespace App\Model;
+
 class Film
 {
     private int $id;

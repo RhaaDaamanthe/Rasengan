@@ -3,14 +3,14 @@
 namespace App\Controller\Catalogue;
 
 use App\Controller\AbstractController;
-use App\Repository\CatalogueRepository;
+use App\Repository\CarteAnimeRepository;
 use App\Database\DBConnexion;
 
 class CatalogueController extends AbstractController
 {
     public function __invoke(): void
     {
-        session_start();
+        /*session_start();
         $this->requireLogin();
 
         $pdo = DBConnexion::getOrCreateInstance()->getPdo();
@@ -20,7 +20,7 @@ class CatalogueController extends AbstractController
         $films = $repository->getFilmsWithCardCount();
 
         $total_anime_cards = array_sum(array_column($animes, 'card_count'));
-        $total_film_cards = array_sum(array_column($films, 'card_count'));
+        $total_film_cards = array_sum(array_column($films, 'card_count'));*/
 
         require_once __DIR__ . '/../../../public/Html/Catalogue/catalogue.php';
     }

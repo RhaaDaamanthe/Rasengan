@@ -1,5 +1,8 @@
 <?php
 
+// 📁 Admin dashboard
+use App\Controller\Admin\ViewAdminDashboardController;
+
 // 📁 Anime Card
 use App\Controller\Admin\AnimeCard\ListAnimeCardController;
 use App\Controller\Admin\AnimeCard\CreateAnimeCardFormController;
@@ -22,6 +25,11 @@ use App\Controller\Admin\Badge\CreateBadgeController;
 use App\Controller\Admin\Badge\AddUserBadgeController;
 
 
+
+// === Routes Admin Dashboard ===
+$router->get('/admin', ViewAdminDashboardController::class);
+
+
 // === Routes Admin Anime ===
 $router->get('/admin/anime-cartes', ListAnimeCardController::class);
 $router->get('/admin/anime-cartes/ajouter', CreateAnimeCardFormController::class);
@@ -42,7 +50,3 @@ $router->post('/admin/film-cartes/supprimer/:id', DeleteFilmCardController::clas
 $router->get('/admin/badge', ListBadgeController::class);
 $router->post('/admin/badge/creer', CreateBadgeController::class);
 $router->post('/admin/badge/ajouter', AddUserBadgeController::class);
-
-
-
-
