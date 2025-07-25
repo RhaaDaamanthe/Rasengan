@@ -25,10 +25,10 @@ class UpdateFilmCardSubmitController extends AbstractController
         $id = (int)$params['id'];
         $nom = $_POST['nom'] ?? '';
         $description = $_POST['description'] ?? '';
-        $animeId = (int)($_POST['anime'] ?? 0);
+        $filmId = (int)($_POST['film'] ?? 0);
         $rareteId = (int)($_POST['id_rarete'] ?? 6);
 
-        if (!$nom || !$animeId || !$rareteId) {
+        if (!$nom || !$filmId || !$rareteId) {
             http_response_code(400);
             echo "Champs manquants.";
             exit;
