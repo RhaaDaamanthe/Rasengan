@@ -73,5 +73,3 @@ Le routeur défini dans `public/index.php` charge tous les fichiers du dossier `
 - `routes/` : définitions de toutes les routes.
 - `src/` : contrôleurs, modèles et accès base de données.
 - `script/` : scripts SQL.
-
-Cette documentation technique résume le fonctionnement de l'application et l'organisation du code. Les PR sont bienvenues pour toute amélioration.
