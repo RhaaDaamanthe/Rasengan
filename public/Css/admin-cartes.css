@@ -1,0 +1,51 @@
+.carte-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.carte {
+    width: 200px;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    text-align: center;
+    background-color: #fafafa;
+    border-radius: 8px;
+}
+
+.carte img {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.actions a,
+.actions form button {
+    font-size: 0.9em;
+    padding: 0.3rem 0.6rem;
+    border: none;
+    background: #2E598E;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.actions form {
+    display: inline;
+}
+
+.btn-ajouter {
+    padding: 0.5rem 1rem;
+    background: green;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}

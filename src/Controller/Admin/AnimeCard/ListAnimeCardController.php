@@ -18,6 +18,6 @@ class ListAnimeCardController extends AbstractController
         $repo = new CarteAnimeRepository($pdo);
         $cartes = $repo->getAllCartesWithRarityInfo();
 
-        require_once __DIR__ . '/../../../public/Html/Admin/AdminCardAnimeViewer.php';
+        require_once __DIR__ . '/../../../public/Html/Admin/ListCardAdmin.php';
     }
 }

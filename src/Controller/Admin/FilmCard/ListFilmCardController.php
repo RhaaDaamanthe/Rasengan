@@ -18,6 +18,6 @@ class ListFilmCardController extends AbstractController
         $repo = new CarteFilmRepository($pdo);
         $cartes = $repo->getAllCartesFilmWithRarityInfo();
 
-        require_once __DIR__ . '/../../../public/Html/Admin/AdminCardFilmViewer.php';
+        require_once __DIR__ . '/../../../public/Html/Admin/ListCardAdmin.php';
     }
 }
