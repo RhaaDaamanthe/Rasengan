@@ -41,13 +41,13 @@
 <main>
     <h1>Catalogue des cartes</h1>
     <div class="main-catalogue">
-        <div class="card" data-url="/cartes/animes">
+        <div class="card" data-url="/cartes/anime">
             <img src="/Images/anime_catalogue.jpg" alt="Animés"/>
             <div class="card-content">
                 <h2 class="card-title">Cartes animés</h2>
             </div>
         </div>
-        <div class="card" data-url="/cartes/films">
+        <div class="card" data-url="/cartes/film">
             <img src="/Images/film_catalogue.jpg" alt="Films & séries" />
             <div class="card-content">
                 <h2 class="card-title">Cartes films & séries</h2>
@@ -55,37 +55,6 @@
         </div>
     </div>
 
-    <section class="catalogue-section">
-        <div class="catalogue-container">
-            <div class="catalogue-list">
-                <h3>Animés</h3>
-                <ul id="anime-list">
-                    <?php if (empty($animes)): ?>
-                        <li>Aucun animé trouvé.</li>
-                    <?php else: ?>
-                        <?php foreach ($animes as $anime): ?>
-                            <li><?= htmlspecialchars(ucfirst($anime['anime'])) . ' (' . $anime['card_count'] . ')' ?></li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                    <li class="total-cards"><strong>Total des cartes : <?= $total_anime_cards ?></strong></li>
-                </ul>
-            </div>
-
-            <div class="catalogue-list">
-                <h3>Films et séries</h3>
-                <ul id="film-list">
-                    <?php if (empty($films)): ?>
-                        <li>Aucun film ou série trouvé.</li>
-                    <?php else: ?>
-                        <?php foreach ($films as $film): ?>
-                            <li><?= htmlspecialchars(ucfirst($film['film'])) . ' (' . $film['card_count'] . ')' ?></li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                    <li class="total-cards"><strong>Total des cartes : <?= $total_film_cards ?></strong></li>
-                </ul>
-            </div>
-        </div>
-    </section>
 </main>
 
 <footer>

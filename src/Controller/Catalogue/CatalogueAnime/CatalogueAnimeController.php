@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller\Catalogue;
+namespace App\Controller\Catalogue\CatalogueAnime;
 
 use App\Controller\AbstractController;
-use Repository\CatalogueAnimeRepository;
-use src\Initialisation\DBConnexion;
+use Repository\CarteAnimeRepository;
+use App\Database\DBConnexion;
 
 class CatalogueAnimeController extends AbstractController
 {
@@ -15,7 +15,7 @@ class CatalogueAnimeController extends AbstractController
         $pdo = DBConnexion::getOrCreateInstance()->getPdo();
         $repo = new CarteAnimeRepository($pdo);
 
-        $cartes = $repo->getAllCartesAvecInfos();
+        $cartes = $repo->getAllCartesWithRarityInfo();
 
         require_once __DIR__ . '/../../../public/Html/Catalogue/cartes_animes.php';
     }
