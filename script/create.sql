@@ -1,84 +1,99 @@
-DROP TABLE IF EXISTS `animes`;
-CREATE TABLE IF NOT EXISTS `animes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nom` (`nom`)
-) ENGINE=MyISAM AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Suppression des tables existantes
+DROP TABLE IF EXISTS utilisateurs_badges;
+DROP TABLE IF EXISTS cartes_logs;
+DROP TABLE IF EXISTS utilisateurs_cartes_wishlist;
+DROP TABLE IF EXISTS utilisateurs_cartes_favori;
+DROP TABLE IF EXISTS utilisateurs_cartes_films;
+DROP TABLE IF EXISTS utilisateurs_cartes_animes;
+DROP TABLE IF EXISTS utilisateurs;
+DROP TABLE IF EXISTS cartes_films;
+DROP TABLE IF EXISTS cartes_animes;
+DROP TABLE IF EXISTS films;
+DROP TABLE IF EXISTS animes;
+DROP TABLE IF EXISTS raretes;
+DROP TABLE IF EXISTS badges;
 
-DROP TABLE IF EXISTS `cartes_animes`;
-CREATE TABLE IF NOT EXISTS `cartes_animes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(100) NOT NULL,
-  `id_rarete` int NOT NULL,
-  `image_path` varchar(255) DEFAULT NULL,
-  `description` text,
-  `id_anime` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_rarete` (`id_rarete`),
-  KEY `fk_anime` (`id_anime`)
-) ENGINE=MyISAM AUTO_INCREMENT=700 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- Table animes
+CREATE TABLE animes (
+  id INT NOT NULL AUTO_INCREMENT,
+  nom VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY (nom)
+);
 
-DROP TABLE IF EXISTS `cartes_films`;
-CREATE TABLE IF NOT EXISTS `cartes_films` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(100) NOT NULL,
-  `id_rarete` int NOT NULL,
-  `image_path` varchar(255) DEFAULT NULL,
-  `description` text,
-  `id_film` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_film` (`id_film`)
-) ENGINE=InnoDB AUTO_INCREMENT=318 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- Table films
+CREATE TABLE films (
+  id INT NOT NULL AUTO_INCREMENT,
+  nom VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY (nom)
+);
 
-DROP TABLE IF EXISTS `films`;
-CREATE TABLE IF NOT EXISTS `films` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nom` (`nom`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Table cartes_animes
+CREATE TABLE cartes_animes (
+  id INT NOT NULL AUTO_INCREMENT,
+  nom VARCHAR(100) NOT NULL,
+  id_rarete INT NOT NULL,
+  image_path VARCHAR(255),
+  description TEXT,
+  id_anime INT,
+  PRIMARY KEY (id),
+  KEY (id_rarete),
+  KEY (id_anime)
+);
 
-DROP TABLE IF EXISTS `raretes`;
-CREATE TABLE IF NOT EXISTS `raretes` (
-  `id_rarete` int NOT NULL AUTO_INCREMENT,
-  `libelle` varchar(50) NOT NULL,
-  `quantite` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_rarete`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- Table cartes_films (avec clé étrangère intégrée)
+CREATE TABLE cartes_films (
+  id INT NOT NULL AUTO_INCREMENT,
+  nom VARCHAR(100) NOT NULL,
+  id_rarete INT NOT NULL,
+  image_path VARCHAR(255),
+  description TEXT,
+  id_film INT,
+  PRIMARY KEY (id),
+  KEY (id_film),
+  CONSTRAINT fk_film FOREIGN KEY (id_film) REFERENCES films(id)
+);
 
-DROP TABLE IF EXISTS `utilisateurs`;
-CREATE TABLE IF NOT EXISTS `utilisateurs` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `pseudo` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `image_collection` varchar(255),
-  `titre_collection` varchar(100),
-  `date_creation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `is_admin` tinyint DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- Table raretes
+CREATE TABLE raretes (
+  id_rarete INT NOT NULL AUTO_INCREMENT,
+  libelle VARCHAR(50) NOT NULL,
+  quantite INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (id_rarete)
+);
 
-DROP TABLE IF EXISTS `utilisateurs_cartes_animes`;
-CREATE TABLE IF NOT EXISTS `utilisateurs_cartes_animes` (
-  `user_id` int NOT NULL,
-  `carte_id` int NOT NULL,
-  `quantite` int NOT NULL DEFAULT '1',
-  PRIMARY KEY (`user_id`,`carte_id`),
-  KEY `carte_id` (`carte_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- Table utilisateurs
+CREATE TABLE utilisateurs (
+  id INT NOT NULL AUTO_INCREMENT,
+  pseudo VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  image_collection VARCHAR(255),
+  titre_collection VARCHAR(100),
+  date_creation DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  password VARCHAR(255) NOT NULL,
+  is_admin TINYINT DEFAULT 0,
+  PRIMARY KEY (id)
+);
 
-DROP TABLE IF EXISTS `utilisateurs_cartes_films`;
-CREATE TABLE IF NOT EXISTS `utilisateurs_cartes_films` (
-  `user_id` int NOT NULL,
-  `carte_id` int NOT NULL,
-  `quantite` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`,`carte_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- Table utilisateurs_cartes_animes
+CREATE TABLE utilisateurs_cartes_animes (
+  user_id INT NOT NULL,
+  carte_id INT NOT NULL,
+  quantite INT NOT NULL DEFAULT 1,
+  PRIMARY KEY (user_id, carte_id),
+  KEY (carte_id)
+);
 
+-- Table utilisateurs_cartes_films
+CREATE TABLE utilisateurs_cartes_films (
+  user_id INT NOT NULL,
+  carte_id INT NOT NULL,
+  quantite INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, carte_id)
+);
+
+-- Table favoris
 CREATE TABLE utilisateurs_cartes_favori (
   user_id INT NOT NULL,
   carte_id INT NOT NULL,
@@ -86,6 +101,7 @@ CREATE TABLE utilisateurs_cartes_favori (
   PRIMARY KEY (user_id, carte_id, type)
 );
 
+-- Table wishlist
 CREATE TABLE utilisateurs_cartes_wishlist (
   user_id INT NOT NULL,
   carte_id INT NOT NULL,
@@ -93,13 +109,16 @@ CREATE TABLE utilisateurs_cartes_wishlist (
   PRIMARY KEY (user_id, carte_id, type)
 );
 
+-- Table badges
 CREATE TABLE badges (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   nom VARCHAR(100) NOT NULL,
   description TEXT,
-  image_path VARCHAR(255) DEFAULT NULL
+  image_path VARCHAR(255),
+  PRIMARY KEY (id)
 );
 
+-- Table utilisateurs_badges
 CREATE TABLE utilisateurs_badges (
   user_id INT NOT NULL,
   badge_id INT NOT NULL,
@@ -109,8 +128,14 @@ CREATE TABLE utilisateurs_badges (
   FOREIGN KEY (badge_id) REFERENCES badges(id)
 );
 
-
-
-
-ALTER TABLE `cartes_films`
-  ADD CONSTRAINT `fk_film` FOREIGN KEY (`id_film`) REFERENCES `films` (`id`);
+-- Table cartes_logs
+CREATE TABLE cartes_logs (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  carte_id INT NOT NULL,
+  type ENUM('anime', 'film') NOT NULL,
+  action ENUM('ajout', 'suppression', 'modification') NOT NULL,
+  date_action DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
+);
