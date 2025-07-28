@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use Model\Rarete;
+use App\Model\Rarete;
 use PDO;
 
 class RareteRepository
