@@ -95,4 +95,13 @@ class UtilisateursRepository
             'password' => $passwordHash
         ]);
     }
+
+    public function emailExists(string $email): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM utilisateurs WHERE email = :email LIMIT 1");
+        $stmt->execute(['email' => $email]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
 }

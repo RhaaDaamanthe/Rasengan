@@ -3,7 +3,7 @@
 namespace App\Controller\Catalogue\CatalogueAnime;
 
 use App\Controller\AbstractController;
-use Repository\CarteAnimeRepository;
+use App\Repository\CarteAnimeRepository;
 use App\Database\DBConnexion;
 
 class CatalogueAnimeController extends AbstractController

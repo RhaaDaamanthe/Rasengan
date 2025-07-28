@@ -3,7 +3,7 @@
 namespace App\Controller\Catalogue\CatalogueFilm;
 
 use App\Controller\AbstractController;
-use Repository\CarteFilmRepository;
+use App\Repository\CarteFilmRepository;
 use App\Database\DBConnexion;
 
 class CatalogueFilmController extends AbstractController
