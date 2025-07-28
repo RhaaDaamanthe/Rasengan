@@ -12,37 +12,31 @@ class BadgeRepository
         $this->pdo = $pdo;
     }
 
-    /**
-     * Récupère tous les badges disponibles
-     */
     public function getAllBadges(): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM badges");
+        $query = "SELECT * FROM badges ORDER BY id";
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Récupère les badges d'un utilisateur donné
-     */
     public function getBadgesByUser(int $userId): array
     {
-        $stmt = $this->pdo->prepare("
+        $query = "
             SELECT b.id, b.nom, b.description, b.image_path, ub.date_obtention
             FROM utilisateurs_badges ub
             JOIN badges b ON ub.badge_id = b.id
             WHERE ub.user_id = :user_id
-        ");
+        ";
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Vérifie si un utilisateur possède déjà un badge
-     */
     public function hasUserBadge(int $userId, int $badgeId): bool
     {
-        $stmt = $this->pdo->prepare("SELECT 1 FROM utilisateurs_badges WHERE user_id = :user_id AND badge_id = :badge_id");
+        $query = "SELECT 1 FROM utilisateurs_badges WHERE user_id = :user_id AND badge_id = :badge_id";
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute([
             'user_id' => $userId,
             'badge_id' => $badgeId
@@ -50,13 +44,11 @@ class BadgeRepository
         return (bool) $stmt->fetchColumn();
     }
 
-    /**
-     * Attribue un badge à un utilisateur (si non déjà attribué)
-     */
     public function assignBadgeToUser(int $userId, int $badgeId): void
     {
         if (!$this->hasUserBadge($userId, $badgeId)) {
-            $stmt = $this->pdo->prepare("INSERT INTO utilisateurs_badges (user_id, badge_id) VALUES (:user_id, :badge_id)");
+            $query = "INSERT INTO utilisateurs_badges (user_id, badge_id) VALUES (:user_id, :badge_id)";
+            $stmt = $this->pdo->prepare($query);
             $stmt->execute([
                 'user_id' => $userId,
                 'badge_id' => $badgeId
@@ -64,14 +56,30 @@ class BadgeRepository
         }
     }
 
-    /**
-     * Récupère un badge par son ID
-     */
     public function getBadgeById(int $badgeId): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM badges WHERE id = :id");
+        $query = "SELECT * FROM badges WHERE id = :id LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute(['id' => $badgeId]);
-        $badge = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $badge ?: null;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Retourne les badges avec nombre de possesseurs
+     */
+    public function getBadgesWithUserCount(): array
+    {
+        $query = "
+            SELECT b.id, b.nom, b.description, b.image_path, COUNT(ub.user_id) AS user_count
+            FROM badges b
+            LEFT JOIN utilisateurs_badges ub ON b.id = ub.badge_id
+            GROUP BY b.id, b.nom, b.description, b.image_path
+            ORDER BY b.id
+        ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use Model\Anime;
+use App\Model\Anime;
 use PDO;
 
 

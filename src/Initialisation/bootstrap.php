@@ -1,5 +1,5 @@
 <?php
-use Repository\RareteRepository;
+use App\Repository\RareteRepository;
 
 require_once __DIR__ . '/session_Auth.php';
 require_once __DIR__ . '/../config/database.php';

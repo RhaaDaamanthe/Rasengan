@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use Model\Utilisateur;
+use App\Model\Utilisateur;
 use PDO;
 
 class UtilisateursRepository
