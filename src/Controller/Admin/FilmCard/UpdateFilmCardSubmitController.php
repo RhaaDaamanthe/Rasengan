@@ -4,9 +4,9 @@ namespace App\Controller\Admin\FilmCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Model\Rarete;
-use Repository\CarteFilmRepository;
-use Repository\FilmsRepository;
+use App\Model\Rarete;
+use App\Repository\CarteFilmRepository;
+use App\Repository\FilmsRepository;
 
 class UpdateFilmCardSubmitController extends AbstractController
 {

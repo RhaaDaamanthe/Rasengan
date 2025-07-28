@@ -1,6 +1,6 @@
 <?php
 
-namespace Repository;
+namespace App\Repository;
 require_once __DIR__ . '/../Model/Film.php';
 
 use App\Model\Film;

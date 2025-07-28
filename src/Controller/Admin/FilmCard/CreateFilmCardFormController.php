@@ -4,8 +4,8 @@ namespace App\Controller\Admin\FilmCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Repository\FilmsRepository;
-use Repository\RareteRepository;
+use App\Repository\FilmsRepository;
+use App\Repository\RareteRepository;
 
 class CreateFilmCardFormController extends AbstractController
 {

@@ -4,7 +4,7 @@ namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Repository\CarteAnimeRepository;
+use App\Repository\CarteAnimeRepository;
 
 class DeleteAnimeCardController extends AbstractController
 {

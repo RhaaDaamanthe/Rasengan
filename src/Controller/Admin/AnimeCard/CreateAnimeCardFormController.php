@@ -4,8 +4,8 @@ namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Repository\AnimeRepository;
-use Repository\RareteRepository;
+use App\Repository\AnimeRepository;
+use App\Repository\RareteRepository;
 
 class CreateAnimeCardFormController extends AbstractController
 {

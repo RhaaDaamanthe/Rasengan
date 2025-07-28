@@ -4,7 +4,7 @@ namespace App\Controller\Admin\FilmCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Repository\CarteFilmRepository;
+use App\Repository\CarteFilmRepository;
 
 class DeleteFilmCardController extends AbstractController
 {

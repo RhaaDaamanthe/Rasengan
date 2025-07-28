@@ -1,7 +1,7 @@
 <?php
 
-use Repository\RareteRepository;
-use Repository\UtilisateursRepository;
+use App\Repository\RareteRepository;
+use App\Repository\UtilisateursRepository;
 
 require_once 'src/Repository/RareteRepository.php';
 require_once 'src/Repository/UtilisateursRepository.php';

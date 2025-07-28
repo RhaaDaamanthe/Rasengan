@@ -4,10 +4,10 @@ namespace App\Controller\Admin\FilmCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Model\CarteFilm;
-use Repository\CarteFilmRepository;
-use Repository\FilmsRepository;
-use Repository\RareteRepository;
+use App\Model\CarteFilm;
+use App\Repository\CarteFilmRepository;
+use App\Repository\FilmsRepository;
+use App\Repository\RareteRepository;
 
 class CreateFilmCardSubmitController extends AbstractController
 {

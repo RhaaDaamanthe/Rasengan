@@ -4,9 +4,9 @@ namespace App\Controller\Admin\AnimeCard;
 
 use App\Controller\AbstractController;
 use App\Database\DBConnexion;
-use Model\Rarete;
-use Repository\CarteAnimeRepository;
-use Repository\AnimeRepository;
+use App\Model\Rarete;
+use App\Repository\CarteAnimeRepository;
+use App\Repository\AnimeRepository;
 
 class UpdateAnimeCardSubmitController extends AbstractController
 {
