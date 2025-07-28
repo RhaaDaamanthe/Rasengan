@@ -37,14 +37,14 @@ INSERT INTO `animes` (`id`, `nom`) VALUES
 (36, 'Higurashi no Naku Koro ni'),
 (37, 'Horimiya'),
 (38, 'Hunter x Hunter'),
-(39, 'Jojo\'s Bizarre Adventure'),
+(39, 'Jojo''s Bizarre Adventure'),
 (40, 'Jujutsu Kaisen'),
 (41, 'Kabaneri of the Iron Fortress'),
 (42, 'Kill la Kill'),
 (43, 'Kimi ni todoke'),
 (44, 'Konosuba'),
-(45, 'Kuroko\'s Basket'),
-(46, 'Les carnets de l\'Apothicaire'),
+(45, 'Kuroko''s Basket'),
+(46, 'Les carnets de l''Apothicaire'),
 (47, 'Love is war'),
 (48, 'Lycoris Recoil'),
 (49, 'Mahou Shoujo Madoka★Magica'),
@@ -70,7 +70,7 @@ INSERT INTO `animes` (`id`, `nom`) VALUES
 (69, 'Solo Leveling'),
 (70, 'Soul Eater'),
 (71, 'Spy x Family'),
-(72, 'Steins;
+(72, 'Steins');
 
 INSERT INTO `cartes_animes` (`id`, `nom`, `id_rarete`, `image_path`, `description`, `id_anime`) VALUES
 (1, 'Chopper', 6, 'Images/Cartes/Events/1_Chopper.jpg', '', 61),
@@ -1062,7 +1062,7 @@ INSERT INTO `films` (`id`, `nom`) VALUES
 (5, 'Harry Potter'),
 (6, 'Interstellar'),
 (22, 'Kung Fu Panda'),
-(7, 'L\'âge de glace'),
+(7, 'L''âge de glace'),
 (8, 'La La Land'),
 (9, 'Le loup de Wall Street'),
 (10, 'Le Seigneur des Anneaux'),
