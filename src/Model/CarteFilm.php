@@ -1,6 +1,9 @@
 <?php
 
-namespace Model;
+namespace App\Model;
+
+use App\Model\Film;
+use App\Model\Rarete;
 
 class CarteFilm
 {

@@ -4,8 +4,8 @@ namespace App\Repository;
 
 
 use App\Model\CarteAnime;
-use App\Model\Rarete;
 use App\Model\Anime;
+use App\Model\Rarete;
 use PDO;
 
 
@@ -161,7 +161,7 @@ class CarteAnimeRepository
                 $row['rarete_libelle']
             );
 
-            $anime = new \Model\Anime(
+            $anime = new Anime(
                 (int)$row['anime_id'],
                 $row['anime_nom']
             );

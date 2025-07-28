@@ -1,6 +1,8 @@
 <?php
 
-namespace Model;
+namespace App\Model;
+use App\Model\Anime;
+use App\Model\Rarete;
 
 class CarteAnime
 {
