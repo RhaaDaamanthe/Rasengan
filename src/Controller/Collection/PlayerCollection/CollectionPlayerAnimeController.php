@@ -1,20 +1,24 @@
 <?php
 
 namespace App\Controller\Collection\PlayerCollection;
-//Affiche toutes les carte anime d'un joueur
-//use
+
 use App\Controller\AbstractController;
+use App\Database\DBConnexion;
+use App\Repository\CarteAnimeRepository;
 
 class CollectionPlayerAnimeController extends AbstractController
 {
     public function __invoke(): void
     {
-        //récupération de l'utilisateur connecté
         session_start();
-        //on oblige l'utilisateur à se connecter pour pouvoir rentrer sur la page
         $this->requireLogin();
 
-        //la vue 
-        require_once __DIR__ . '/../../../public/Html/Player/player.php';
+        $userId = $_SESSION['user_id'];
+
+        $pdo = (new DBConnexion())->getPdo();
+        $repo = new CarteAnimeRepository($pdo);
+        $cartes = $repo->getCollectionAnimeByUserId($userId);
+
+        require_once __DIR__ . '/../../../public/Html/Collection/collectionAnime.php';
     }
 }

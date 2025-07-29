@@ -236,5 +236,70 @@ class CarteFilmRepository
         return $cartes;
     }
 
+    public function getCollectionFilmByUserId(int $userId): array
+    {
+        $sql = "SELECT cf.id, cf.nom, cf.id_rarete, cf.image_path, cf.description,
+                       f.nom AS film, r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                FROM utilisateurs_cartes_films ucf
+                JOIN cartes_films cf ON cf.id = ucf.carte_id
+                LEFT JOIN films f ON cf.id_film = f.id
+                JOIN raretes r ON cf.id_rarete = r.id_rarete
+                WHERE ucf.user_id = ?
+                ORDER BY cf.id_rarete DESC, cf.id ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$userId]);
+        $cartes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($cartes as &$carte) {
+            $idRarete = (int) $carte['id_rarete'];
+            $carteId = (int) $carte['id'];
+
+            if (in_array($idRarete, [6, 5, 4])) {
+                $carte['info_sup'] = $this->getSingleOwner($carteId) ?? 'Aucun';
+                $carte['owners'] = null;
+            } else {
+                $total = $this->getTotalCopies($carteId);
+                $carte['info_sup'] = "Prises : $total";
+                $carte['info_sup'] .= match ($idRarete) {
+                    3 => '/2',
+                    2, 1 => '/3',
+                    default => '',
+                };
+                $carte['owners'] = $this->getOwnersByCardId($carteId);
+            }
+        }
+
+        return $cartes;
+    }
+
+    private function getSingleOwner(int $cardId): ?string
+    {
+        $stmt = $this->pdo->prepare("SELECT u.pseudo
+                                     FROM utilisateurs u
+                                     JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id
+                                     WHERE uc.carte_id = ?
+                                     LIMIT 1");
+        $stmt->execute([$cardId]);
+        return $stmt->fetchColumn() ?: null;
+    }
+
+    private function getTotalCopies(int $cardId): int
+    {
+        $stmt = $this->pdo->prepare("SELECT SUM(quantite) FROM utilisateurs_cartes_films WHERE carte_id = ?");
+        $stmt->execute([$cardId]);
+        return (int) ($stmt->fetchColumn() ?? 0);
+    }
+
+    private function getOwnersByCardId(int $cardId): array
+    {
+        $stmt = $this->pdo->prepare("SELECT u.pseudo
+                                     FROM utilisateurs u
+                                     JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id
+                                     WHERE uc.carte_id = ?");
+        $stmt->execute([$cardId]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
 
 }
