@@ -40,10 +40,12 @@ class UtilisateursRepository
 
     if ($row) {
         return new Utilisateur(
-            id: (int) $row['id'],
-            pseudo: $row['pseudo'],
-            email: $row['email'],
-            isAdmin: (bool) $row['is_admin']
+                (int) $row['id'],
+                $row['pseudo'],
+                $row['email'],
+                (bool) $row['is_admin'],
+                $row['image_collection'] ?? null,
+                $row['titre_collection'] ?? null
             );
         }
 

@@ -1,20 +1,36 @@
 <?php
 
 namespace App\Controller\Player;
-//Il s'agit du controller pour voir en read-only les profils des autres joueurs
-//use
+
 use App\Controller\AbstractController;
+use App\Database\DBConnexion;
+use App\Repository\UtilisateursRepository;
 
 class PlayerViewPlayer extends AbstractController
 {
     public function __invoke(): void
     {
-        //récupération de l'utilisateur connecté
         session_start();
-        //on oblige l'utilisateur à se connecter pour pouvoir rentrer sur la page
         $this->requireLogin();
 
-        //la vue 
-        require_once __DIR__ . '/../../../public/Html/Player/player.php';
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            http_response_code(400);
+            echo "ID utilisateur invalide.";
+            exit;
+        }
+
+        $viewerId = (int) $_GET['id'];
+
+        $pdo = (new DBConnexion())->getPdo();
+        $repo = new UtilisateursRepository($pdo);
+        $utilisateur = $repo->getUserById($viewerId);
+
+        if (!$utilisateur) {
+            http_response_code(404);
+            echo "Utilisateur introuvable.";
+            exit;
+        }
+
+        require_once __DIR__ . '/../../../public/Html/Player/playerViewer.php';
     }
 }
