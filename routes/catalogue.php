@@ -15,16 +15,16 @@ use App\Controller\Catalogue\CatalogueFilm\CatalogueFilmCarteDetailController;
 use App\Controller\Catalogue\CatalogueFilm\CatalogueFilmMythiqueController;
 use App\Controller\Catalogue\CatalogueFilm\CatalogueFilmMythiqueDetailController;
 
-//renvoie sur la page de sélection
+// === Routes Catalogue ===
 $router->get('/catalogue', CatalogueController::class);
 
-//affiche le catalogue des animes
+// === Routes Catalogue Anime ===
 $router->get('/catalogue/anime', CatalogueAnimeController::class);
 $router->get('/catalogue/anime/carte/:id', CatalogueAnimeCarteDetailController::class);
 $router->get('/catalogue/anime/mythique', CatalogueAnimeMythiqueController::class);
 $router->get('/catalogue/anime/mythique/:id', CatalogueAnimeMythiqueDetailController::class);
 
-//affiche le catalogue des films
+// === Routes Catalogue Film ===
 $router->get('/catalogue/film', CatalogueFilmController::class);
 $router->get('/catalogue/film/carte/:id', CatalogueFilmCarteDetailController::class);
 $router->get('/catalogue/film/mythique', CatalogueFilmMythiqueController::class);

@@ -10,12 +10,12 @@ use App\Controller\Account\AccountViewerController;
 // 📁 Badge du joueur
 use App\Controller\Account\ListUserBadgeController;
 
-//route pour accéder au profil de l'utilisateur
+// === Routes Profil du joueur ===
 $router->get('/compte/:id', AccountController::class);
 $router->post('/compte/update', UpdateAccountController::class);
 
-//route pour accéder au profil d'un utilisateur en read-only
+// === Routes Profil d'un autre joueur ===
 $router->get('/compte/viewer/:id', AccountViewerController::class);
 
-//route pour voir tous les badges de l'utilisateur
+// === Routes Badge du joueur ===
 $router->get('/compte/badge', ListUserBadgeController::class);

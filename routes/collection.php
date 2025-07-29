@@ -1,15 +1,18 @@
 <?php
 
+// 📁 Collection générale
 use App\Controller\Collection\CollectionController;
+
+// 📁 Collection des joueurs
 use App\Controller\Collection\PlayerCollection\CollectionPlayerController;
 use App\Controller\Collection\PlayerCollection\CollectionPlayerAnimeController;
 use App\Controller\Collection\PlayerCollection\CollectionPlayerFilmController;
 
-//collection générale, voir l'ensemble des joueurs
+// === Routes Collection ===
 $router->get('/collection', CollectionController::class);
 
 
-//collection concernant les joueurs individuellement
+// === Routes Collection des joueurs ===
 $router->get('/collection/joueur/:id', CollectionPlayerController::class);
 $router->get('/collection/joueur/:id/anime', CollectionPlayerAnimeController::class);
 $router->get('/collection/joueur/:id/film', CollectionPlayerFilmController::class);
