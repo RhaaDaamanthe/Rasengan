@@ -14,6 +14,39 @@
         </a>
     </p>
 
+    <form method="GET" class="filtres">
+    <select name="rarete">
+        <option value="">-- Toutes raretés --</option>
+        <?php foreach ($raretes as $r): ?>
+            <option value="<?= $r['id_rarete'] ?>" <?= (isset($_GET['rarete']) && $_GET['rarete'] == $r['id_rarete']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($r['libelle']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <select name="anime">
+        <option value="">-- Tous animes --</option>
+        <?php foreach ($animes as $a): ?>
+            <option value="<?= $a['id'] ?>" <?= (isset($_GET['anime']) && $_GET['anime'] == $a['id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($a['nom']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <button type="submit">Filtrer</button>
+    </form>
+
+    <?php if ($nbPages > 1): ?>
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $nbPages; $i++): ?>
+            <a href="?page=<?= $i ?>&<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"
+               class="<?= $i === $page ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+    <?php endif; ?>
+
     <div class="carte-container">
         <?php foreach ($cartes as $carte): ?>
             <div class="carte">

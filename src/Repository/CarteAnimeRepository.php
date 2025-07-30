@@ -182,15 +182,34 @@ class CarteAnimeRepository
     }
 
 
-    public function getAllCartesWithRarityInfo(): array
+    public function getAllCartesWithRarityInfo(int $page = 1, int $limit = 30, ?int $idRarete = null, ?int $idAnime = null): array
     {
-        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.image_path, ca.description,
-                a.id AS anime_id, a.nom AS anime_nom,
-                r.libelle AS rarete_libelle, r.quantite AS quantite_max
-                FROM cartes_animes ca
-                JOIN raretes r ON ca.id_rarete = r.id_rarete
-                LEFT JOIN animes a ON ca.id_anime = a.id
-                ORDER BY ca.id_rarete DESC, ca.id ASC";
+        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description,
+               a.id AS anime_id, a.nom AS anime_nom,
+               r.libelle AS rarete_libelle, r.quantite AS quantite_max
+        FROM cartes_animes ca
+        JOIN raretes r ON ca.id_rarete = r.id_rarete
+        LEFT JOIN animes a ON ca.id_anime = a.id
+        WHERE 1=1";
+
+        $params = [];
+
+        if ($idRarete !== null) {
+            $sql .= " AND ca.id_rarete = ?";
+            $params[] = $idRarete;
+        }
+
+        if ($idAnime !== null) {
+            $sql .= " AND ca.id_anime = ?";
+            $params[] = $idAnime;
+        }
+
+        $sql .= " ORDER BY ca.id_rarete DESC, ca.id ASC
+                LIMIT ? OFFSET ?";
+
+        $params[] = $limit;
+        $params[] = ($page - 1) * $limit;
+
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -258,6 +277,28 @@ class CarteAnimeRepository
 
         return $cartes;
     }
+
+    public function countCartesAnime(?int $idRarete = null, ?int $idAnime = null): int
+    {
+        $sql = "SELECT COUNT(*) FROM cartes_animes WHERE 1=1";
+        $params = [];
+
+        if ($idRarete !== null) {
+            $sql .= " AND id_rarete = ?";
+            $params[] = $idRarete;
+        }
+
+        if ($idAnime !== null) {
+            $sql .= " AND id_anime = ?";
+            $params[] = $idAnime;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn();
+    }
+
 
     public function getCollectionAnimeByUserId(int $userId): array
     {
