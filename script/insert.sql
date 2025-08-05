@@ -743,6 +743,32 @@ INSERT INTO `cartes_animes` (`id`, `nom`, `id_rarete`, `image_path`, `descriptio
 (698, 'Saitama & Genos', 6, 'Images/Cartes/Events/31_Saitama & Genos', '', 62),
 (699, 'One Punch Girls', 6, 'Images/Cartes/Events/32_One Punch Girls', '', 62);
 
+INSERT INTO `films` (`id`, `nom`) VALUES
+(1, 'Arcane'),
+(2, 'Fleabag'),
+(3, 'Forrest Gump'),
+(4, 'Game of Thrones'),
+(5, 'Harry Potter'),
+(6, 'Interstellar'),
+(22, 'Kung Fu Panda'),
+(7, 'L''âge de glace'),
+(8, 'La La Land'),
+(9, 'Le loup de Wall Street'),
+(10, 'Le Seigneur des Anneaux'),
+(11, 'Léon'),
+(12, 'Monstres et Compagnie'),
+(14, 'Pirates des Caraibes'),
+(24, 'Pulp Fiction'),
+(15, 'Ratatouille'),
+(16, 'Sex Education'),
+(17, 'Shrek'),
+(18, 'Spirit'),
+(19, 'Star Wars'),
+(20, 'The Greatest Showman'),
+(21, 'The Guilty'),
+(23, 'The Walking Dead'),
+(13, 'Vaiana');
+
 INSERT INTO `cartes_films` (`id`, `nom`, `id_rarete`, `image_path`, `description`, `id_film`) VALUES
 (1, 'Dark Vador', 5, 'Images/Cartes/Films_Mythiques/1_Dark Vador.jpg', 'Avoir : Palpatine, Obi-Wan, Anakin, Padmé', 19),
 (2, 'Jinx', 5, 'Images/Cartes/Films_Mythiques/2_Jinx.jpg', NULL, 1),
@@ -1053,32 +1079,6 @@ INSERT INTO `cartes_films` (`id`, `nom`, `id_rarete`, `image_path`, `description
 (315, 'Daryl Dixon', 4, 'Images/Cartes/Films_Legendaires/38_Daryl Dixon', '', 23),
 (316, 'Rick Grimes', 4, 'Images/Cartes/Films_Legendaires/39_Rick Grimes', '', 23),
 (317, 'Shifu', 5, 'Images/Cartes/Films_Mythiques/6_Shifu', '', 22);
-
-INSERT INTO `films` (`id`, `nom`) VALUES
-(1, 'Arcane'),
-(2, 'Fleabag'),
-(3, 'Forrest Gump'),
-(4, 'Game of Thrones'),
-(5, 'Harry Potter'),
-(6, 'Interstellar'),
-(22, 'Kung Fu Panda'),
-(7, 'L''âge de glace'),
-(8, 'La La Land'),
-(9, 'Le loup de Wall Street'),
-(10, 'Le Seigneur des Anneaux'),
-(11, 'Léon'),
-(12, 'Monstres et Compagnie'),
-(14, 'Pirates des Caraibes'),
-(24, 'Pulp Fiction'),
-(15, 'Ratatouille'),
-(16, 'Sex Education'),
-(17, 'Shrek'),
-(18, 'Spirit'),
-(19, 'Star Wars'),
-(20, 'The Greatest Showman'),
-(21, 'The Guilty'),
-(23, 'The Walking Dead'),
-(13, 'Vaiana');
 
 INSERT INTO `raretes` (`id_rarete`, `libelle`, `quantite`) VALUES
 (1, 'Commune', 3),

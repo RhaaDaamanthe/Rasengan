@@ -184,13 +184,13 @@ class CarteAnimeRepository
 
     public function getAllCartesWithRarityInfo(int $page = 1, int $limit = 30, ?int $idRarete = null, ?int $idAnime = null): array
     {
-        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description,
-               a.id AS anime_id, a.nom AS anime_nom,
-               r.libelle AS rarete_libelle, r.quantite AS quantite_max
-        FROM cartes_animes ca
-        JOIN raretes r ON ca.id_rarete = r.id_rarete
-        LEFT JOIN animes a ON ca.id_anime = a.id
-        WHERE 1=1";
+        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description, ca.image_path,
+                a.id AS anime_id, a.nom AS anime_nom,
+                r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                FROM cartes_animes ca
+                JOIN raretes r ON ca.id_rarete = r.id_rarete
+                LEFT JOIN animes a ON ca.id_anime = a.id
+                WHERE 1=1";
 
         $params = [];
 
@@ -204,15 +204,13 @@ class CarteAnimeRepository
             $params[] = $idAnime;
         }
 
-        $sql .= " ORDER BY ca.id_rarete DESC, ca.id ASC
-                LIMIT ? OFFSET ?";
-
-        $params[] = $limit;
-        $params[] = ($page - 1) * $limit;
-
+        $offset = ($page - 1) * $limit;
+        $sql .= " ORDER BY ca.id_rarete DESC, ca.id ASC LIMIT " . intval($limit) . " OFFSET " . intval($offset);
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute($params);
+
+
 
         $cartes = [];
 
