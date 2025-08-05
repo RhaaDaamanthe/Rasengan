@@ -1,39 +1,40 @@
 <?php
 
 namespace App\Model;
-use App\Model\Anime;
+
+use App\Model\Film;
 use App\Model\Rarete;
 
-class CarteAnime
+class CarteFilm
 {
     private int $id;
     private string $nom;
-    private Anime $anime;
+    private Film $film;
     private Rarete $rarete;
     private string $imagePath;
     private ?string $description;
     private ?string $proprietaire;
     private int $quantiteActuelle;
-
-    //carte anime /catalogue
+    
+    //carte film /catalogue
     private ?string $infoSup = null;
     private array $owners = [];
 
     /**
      * @param int $id
      * @param string $nom
-     * @param Anime $anime
+     * @param Film $film
      * @param Rarete $rarete
      * @param string $imagePath
      * @param string|null $description
      * @param string|null $proprietaire
      * @param int $quantiteActuelle
      */
-    public function __construct(int $id, string $nom, Anime $anime, Rarete $rarete, string $imagePath, ?string $description, ?string $proprietaire, int $quantiteActuelle)
+    public function __construct(int $id, string $nom, Film $film, Rarete $rarete, string $imagePath, ?string $description, ?string $proprietaire, int $quantiteActuelle)
     {
         $this->id = $id;
         $this->nom = $nom;
-        $this->anime = $anime;
+        $this->film = $film;
         $this->rarete = $rarete;
         $this->imagePath = $imagePath;
         $this->description = $description;
@@ -61,14 +62,14 @@ class CarteAnime
         $this->nom = $nom;
     }
 
-    public function getAnime(): Anime
+    public function getFilm(): Film
     {
-        return $this->anime;
+        return $this->film;
     }
 
-    public function setAnime(Anime $anime): void
+    public function setFilm(Film $film): void
     {
-        $this->anime = $anime;
+        $this->film = $film;
     }
 
     public function getRarete(): Rarete
@@ -140,5 +141,6 @@ class CarteAnime
     {
         return $this->owners;
     }
+
 
 }
