@@ -2,14 +2,14 @@
 
 namespace App\Model;
 
-use App\Model\Film;
+use App\Model\Anime;
 use App\Model\Rarete;
 
-class CarteFilm
+class CarteAnime
 {
     private int $id;
     private string $nom;
-    private Film $film;
+    private Anime $anime;
     private Rarete $rarete;
     private string $imagePath;
     private ?string $description;
@@ -23,18 +23,18 @@ class CarteFilm
     /**
      * @param int $id
      * @param string $nom
-     * @param Film $film
+     * @param Anime $anime
      * @param Rarete $rarete
      * @param string $imagePath
      * @param string|null $description
      * @param string|null $proprietaire
      * @param int $quantiteActuelle
      */
-    public function __construct(int $id, string $nom, Film $film, Rarete $rarete, string $imagePath, ?string $description, ?string $proprietaire, int $quantiteActuelle)
+    public function __construct(int $id, string $nom, Anime $anime, Rarete $rarete, string $imagePath, ?string $description, ?string $proprietaire, int $quantiteActuelle)
     {
         $this->id = $id;
         $this->nom = $nom;
-        $this->film = $film;
+        $this->anime = $anime;
         $this->rarete = $rarete;
         $this->imagePath = $imagePath;
         $this->description = $description;
@@ -62,12 +62,12 @@ class CarteFilm
         $this->nom = $nom;
     }
 
-    public function getFilm(): Film
+    public function getAnime(): Anime
     {
-        return $this->film;
+        return $this->anime;
     }
 
-    public function setFilm(Film $film): void
+    public function setAnime(Anime $anime): void
     {
         $this->film = $film;
     }
