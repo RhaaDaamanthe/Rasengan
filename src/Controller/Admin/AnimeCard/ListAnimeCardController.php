@@ -11,32 +11,37 @@ use App\Repository\AnimeRepository;
 class ListAnimeCardController extends AbstractController
 {
     public function __invoke(): void
-    {
-        session_start();
-        $this->requireLogin();
-        $this->requireAdmin();
+{
+    session_start();
+    $this->requireLogin();
+    $this->requireAdmin();
 
-        $pdo        = DBConnexion::getOrCreateInstance()->getPdo();
-        $repo       = new CarteAnimeRepository($pdo);
-        $repoAnime  = new RareteRepository($pdo);
-        $repoRarete = new AnimeRepository($pdo);
+    $pdo = DBConnexion::getOrCreateInstance()->getPdo();
+    $repoAnime = new AnimeRepository($pdo);
+    $repo = new CarteAnimeRepository($pdo);
+    $repoRarete = new RareteRepository($pdo);
 
-        // Paramètres GET pour la pagination et les filtres
-        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $rarete = isset($_GET['rarete']) ? (int)$_GET['rarete'] : null;
-        $anime = isset($_GET['anime']) ? (int)$_GET['anime'] : null;
-        $limit = 30;
+    // pagination
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $limit = 30;
 
-        // Données
-        $cartes = $repo->getAllCartesWithRarityInfo($page, $limit, $rarete, $anime);
-        $total = $repo->countCartesAnime($rarete, $anime);
-        $nbPages = ceil($total / $limit);
+    // filtres éventuels
+    $idRarete = isset($_GET['rarete']) && $_GET['rarete'] !== '' ? (int)$_GET['rarete'] : null;
+    $idAnime  = isset($_GET['anime']) && $_GET['anime'] !== '' ? (int)$_GET['anime'] : null;
 
-        // Pour les filtres
-        $raretes = $repoAnime->getAllRaretes();
-        $animes = $repoRarete->getAllAnime();
+    $cartes = $repo->getAllCartesWithRarityInfo($page, $limit, $idRarete, $idAnime);
 
-        $type = 'anime';
-        require_once __DIR__ . '/../../../public/Html/Admin/ListCardAdmin.php';
-    }
+    // total cartes pour pagination
+    $nbTotal = $repo->countCartesAnime($idRarete, $idAnime);
+    $nbPages = max(1, (int) ceil($nbTotal / $limit));
+
+
+    // données annexes pour les filtres
+    $raretes = $repoRarete->getAllRaretes();
+    $animes = $repoAnime->getAllAnime();
+
+    $type = 'anime';
+
+    require_once __DIR__ . '/../../../../public/Html/Admin/ListCardAnime.php';
+}
 }

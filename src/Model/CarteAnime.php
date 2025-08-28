@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model;
+
 use App\Model\Anime;
 use App\Model\Rarete;
 
@@ -14,8 +15,8 @@ class CarteAnime
     private ?string $description;
     private ?string $proprietaire;
     private int $quantiteActuelle;
-
-    //carte anime /catalogue
+    
+    //carte film /catalogue
     private ?string $infoSup = null;
     private array $owners = [];
 
@@ -68,7 +69,7 @@ class CarteAnime
 
     public function setAnime(Anime $anime): void
     {
-        $this->anime = $anime;
+        $this->film = $film;
     }
 
     public function getRarete(): Rarete
@@ -140,5 +141,6 @@ class CarteAnime
     {
         return $this->owners;
     }
+
 
 }

@@ -184,13 +184,13 @@ class CarteAnimeRepository
 
     public function getAllCartesWithRarityInfo(int $page = 1, int $limit = 30, ?int $idRarete = null, ?int $idAnime = null): array
     {
-        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description,
-               a.id AS anime_id, a.nom AS anime_nom,
-               r.libelle AS rarete_libelle, r.quantite AS quantite_max
-        FROM cartes_animes ca
-        JOIN raretes r ON ca.id_rarete = r.id_rarete
-        LEFT JOIN animes a ON ca.id_anime = a.id
-        WHERE 1=1";
+        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description, ca.image_path,
+                a.id AS anime_id, a.nom AS anime_nom,
+                r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                FROM cartes_animes ca
+                JOIN raretes r ON ca.id_rarete = r.id_rarete
+                LEFT JOIN animes a ON ca.id_anime = a.id
+                WHERE 1=1";
 
         $params = [];
 
@@ -204,15 +204,11 @@ class CarteAnimeRepository
             $params[] = $idAnime;
         }
 
-        $sql .= " ORDER BY ca.id_rarete DESC, ca.id ASC
-                LIMIT ? OFFSET ?";
-
-        $params[] = $limit;
-        $params[] = ($page - 1) * $limit;
-
+        $offset = ($page - 1) * $limit;
+        $sql .= " ORDER BY ca.id_rarete DESC, ca.id ASC LIMIT " . intval($limit) . " OFFSET " . intval($offset);
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute($params);
 
         $cartes = [];
 
@@ -300,10 +296,11 @@ class CarteAnimeRepository
     }
 
 
+
     public function getCollectionAnimeByUserId(int $userId): array
     {
         $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.image_path, ca.description,
-                       a.nom AS anime, r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                    a.nom AS anime, r.libelle AS rarete_libelle, r.quantite AS quantite_max
                 FROM utilisateurs_cartes_animes uca
                 JOIN cartes_animes ca ON ca.id = uca.carte_id
                 LEFT JOIN animes a ON ca.id_anime = a.id
@@ -340,10 +337,10 @@ class CarteAnimeRepository
     private function getSingleOwner(int $carteId): ?string
     {
         $stmt = $this->pdo->prepare("SELECT u.pseudo
-                                     FROM utilisateurs u
-                                     JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id
-                                     WHERE uc.carte_id = ?
-                                     LIMIT 1");
+                                    FROM utilisateurs u
+                                    JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id
+                                    WHERE uc.carte_id = ?
+                                    LIMIT 1");
         $stmt->execute([$carteId]);
         return $stmt->fetchColumn() ?: null;
     }
@@ -351,8 +348,8 @@ class CarteAnimeRepository
     private function getTotalCopies(int $carteId): int
     {
         $stmt = $this->pdo->prepare("SELECT SUM(quantite)
-                                     FROM utilisateurs_cartes_animes
-                                     WHERE carte_id = ?");
+                                    FROM utilisateurs_cartes_animes
+                                    WHERE carte_id = ?");
         $stmt->execute([$carteId]);
         return (int) ($stmt->fetchColumn() ?? 0);
     }
@@ -360,9 +357,9 @@ class CarteAnimeRepository
     private function getOwnersByCardId(int $carteId): array
     {
         $stmt = $this->pdo->prepare("SELECT u.pseudo
-                                     FROM utilisateurs u
-                                     JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id
-                                     WHERE uc.carte_id = ?");
+                                    FROM utilisateurs u
+                                    JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id
+                                    WHERE uc.carte_id = ?");
         $stmt->execute([$carteId]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
