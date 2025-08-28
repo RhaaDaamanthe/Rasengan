@@ -15,6 +15,6 @@ class CollectionPlayerController extends AbstractController
         $this->requireLogin();
 
         //la vue 
-        require_once __DIR__ . '/../../../public/Html/Player/player.php';
+        require_once __DIR__ . '/../../../public/Html/Collection/collection.php';
     }
 }
