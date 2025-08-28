@@ -4,20 +4,28 @@ namespace App\Repository;
 
 use PDO;
 
-class UtilisateurCarteFilmRepository {
-    private PDO $pdo;
+class UtilisateurCarteFilmRepository
+{
+    public function __construct(private PDO $pdo) {}
 
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
-    }
+    /** Récupère toutes les cartes film d'un utilisateur */
+    public function getCollectionFilmByUserId(int $userId): array
+    {
+        $sql = "
+            SELECT
+                uf.carte_id,
+                uf.quantite,
+                cf.nom                          AS nom,
+                cf.image_path                   AS image_path,
+                cf.id_rarete                    AS id_rarete,
+                f.nom                           AS film
+            FROM utilisateurs_cartes_films uf
+            JOIN cartes_films cf ON uf.carte_id = cf.id
+            LEFT JOIN films f ON cf.id_film = f.id
+            WHERE uf.user_id = ?
+            ORDER BY cf.id_rarete DESC, cf.id ASC
+        ";
 
-    //récupération de la collection d'anime pour un utilisateur
-    //modifier la requête (sécurisation)
-    public function getCollectionFilmByUserId(int $userId): array {
-        $sql = "SELECT ac.*, c.nom, c.image 
-                FROM utilisateurs_cartes_films ac
-                JOIN cartes_films c ON ac.carte_id = c.id
-                WHERE ac.user_id = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

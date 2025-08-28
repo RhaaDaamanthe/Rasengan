@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/footer.css">
+    <title>Rasengan - Ma Collection de Films</title>
+
+    <!-- Unifie la casse des dossiers (conseille: /CSS, /JS, /Images) -->
+    <link rel="stylesheet" href="/CSS/styles.css">
+    <link rel="stylesheet" href="/CSS/header.css">
+    <link rel="stylesheet" href="/CSS/footer.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Montserrat&family=Poppins&display=swap" rel="stylesheet">
-    <title>Rasengan - Ma Collection de Films</title>
 </head>
 <body>
 <header>
     <nav class="navbar">
-        <a href="/index.php" class="logo">RASENGAN</a>
+        <a href="/" class="logo">RASENGAN</a>
         <div class="nav-links">
             <ul>
-                <li><a href="/index.php">Accueil</a></li>
+                <li><a href="/">Accueil</a></li>
                 <li><a href="/catalogue">Catalogue</a></li>
                 <li class="active"><a href="/collection">Ma Collection</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <li><span class="welcome-message">Bienvenue, <?= htmlspecialchars($_SESSION['pseudo']) ?>!</span></li>
+                    <li><span class="welcome-message">Bienvenue, <?= htmlspecialchars($_SESSION['pseudo'] ?? '') ?>!</span></li>
                     <li><a href="/logout">Déconnexion</a></li>
                 <?php else: ?>
-                    <li><a href="/compte.php">Connexion</a></li>
-                    <li><a href="/inscription.php">Inscription</a></li>
+                    <li><a href="/connexion">Connexion</a></li>
+                    <li><a href="/inscription">Inscription</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -56,14 +59,21 @@
     <div class="catalogue2">
         <?php if (!empty($cartes)): ?>
             <?php foreach ($cartes as $carte): ?>
-                <div class="card" data-film="<?= htmlspecialchars($carte['film']) ?>" data-rarete="<?= $carte['id_rarete'] ?>">
-                    <img src="/Rasengan/<?= htmlspecialchars($carte['image_path']) ?>" alt="<?= htmlspecialchars($carte['nom']) ?>">
+                <div class="card"
+                     data-film="<?= htmlspecialchars($carte['film'] ?? '') ?>"
+                     data-rarete="<?= htmlspecialchars((string)($carte['id_rarete'] ?? '')) ?>">
+                    <img
+                        src="<?= htmlspecialchars('/Images/Cartes/' . ($carte['image_path'] ?? 'placeholder.png')) ?>"
+                        alt="<?= htmlspecialchars($carte['nom'] ?? 'Carte') ?>"
+                        loading="lazy"
+                    >
                     <div class="card-content">
-                        <h2 class="card-title"><?= htmlspecialchars($carte['info_sup']) ?></h2>
-                        <?php if (!empty($carte['owners'])): ?>
-                            <div class="owners-list">
-                                <p>Propriétaires : <?= implode(', ', array_map('htmlspecialchars', $carte['owners'])) ?></p>
-                            </div>
+                        <h2 class="card-title"><?= htmlspecialchars($carte['nom'] ?? '') ?></h2>
+                        <?php if (isset($carte['quantite'])): ?>
+                            <p class="card-qty">Quantité : <?= (int)$carte['quantite'] ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($carte['film'])): ?>
+                            <p class="card-film">Film : <?= htmlspecialchars($carte['film']) ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -75,10 +85,11 @@
 </main>
 
 <footer>
-    <p>© 2024 - Rasengan</p>
-    <a href="https://discord.gg/kyfQZbnkjy" target="_blank">Rejoindre</a>
+    <p>© <?= date('Y') ?> - Rasengan</p>
+    <a href="https://discord.gg/kyfQZbnkjy" target="_blank" rel="noreferrer">Rejoindre</a>
 </footer>
-<script src="/js/main.js"></script>
-<script src="/js/utilisateurs_cartes.js"></script>
+
+<script src="/JS/main.js"></script>
+<script src="/JS/utilisateurs_cartes.js"></script>
 </body>
 </html>
