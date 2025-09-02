@@ -10,13 +10,13 @@ class CatalogueAnimeController extends AbstractController
 {
     public function __invoke(): void
     {
-        $this->requireLogin();
+        // $this->requireLogin();
 
         $pdo = DBConnexion::getOrCreateInstance()->getPdo();
         $repo = new CarteAnimeRepository($pdo);
 
         $cartes = $repo->getAllCartesWithRarityInfo();
 
-        require_once __DIR__ . '/../../../public/Html/Catalogue/cartes_animes.php';
+        require_once __DIR__ . '/../../../../public/Html/Catalogue/catalogueAnime.php';
     }
 }
