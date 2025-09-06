@@ -56,7 +56,7 @@ class AnimeRepository
             FROM animes a
             LEFT JOIN cartes_animes c ON c.id_anime = a.id
             GROUP BY a.id, a.nom
-            ORDER BY a.id;
+            ORDER BY a.nom ASC;
         ";
     
         $stmt = $this->pdo->prepare($query);
@@ -70,8 +70,7 @@ class AnimeRepository
                 'card_count' => (int)$row['card_count']
             ];
         }    
-
+    
         return $animes;
     }
-
 }

@@ -54,6 +54,26 @@
             </div>
         </div>
     </div>
+    <section class="catalogue-section">
+        <div class="catalogue-container">
+            <div class="catalogue-list">
+                <h3>Animés</h3>
+                <ul id="anime-list">
+                    <?php foreach ($animes as $anime): ?>
+                        <li><?= htmlspecialchars($anime['nom']) ?> (<?= htmlspecialchars($anime['card_count']) ?>)</li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <div class="catalogue-list">
+                <h3>Films et séries</h3>
+                <ul id="film-list">
+                    <?php foreach ($films as $film): ?>
+                        <li><?= htmlspecialchars($film['nom']) ?> (<?= htmlspecialchars($film['card_count']) ?>)</li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </section>
 
 </main>
 
