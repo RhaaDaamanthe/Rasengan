@@ -18,11 +18,11 @@ class CarteFilmRepository
     public function getAllCarteFilm(): array
     {
         $query = "SELECT cf.*, f.id AS film_id, f.nom AS film_nom,
-                        r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
-                  FROM cartes_films cf
-                  JOIN films f ON cf.id_film = f.id
-                  JOIN raretes r ON cf.id_rarete = r.id_rarete
-                  ORDER BY cf.id";
+                         r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
+                   FROM cartes_films cf
+                   JOIN films f ON cf.id_film = f.id
+                   JOIN raretes r ON cf.id_rarete = r.id_rarete
+                   ORDER BY cf.id";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
@@ -59,11 +59,11 @@ class CarteFilmRepository
     public function getById(int $id): ?CarteFilm
     {
         $query = "SELECT cf.*, f.id AS film_id, f.nom AS film_nom,
-                         r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
-                  FROM cartes_films cf
-                  JOIN films f ON cf.id_film = f.id
-                  JOIN raretes r ON cf.id_rarete = r.id_rarete
-                  WHERE cf.id = :id";
+                          r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
+                   FROM cartes_films cf
+                   JOIN films f ON cf.id_film = f.id
+                   JOIN raretes r ON cf.id_rarete = r.id_rarete
+                   WHERE cf.id = :id";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':id' => $id]);
@@ -97,10 +97,11 @@ class CarteFilmRepository
     }
 
     public function getByIdFilm(int $id): ?CarteFilm {
-        $query = 'SELECT cf.*, r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
-                  FROM cartes_films cf
-                  JOIN raretes r ON cf.id_rarete = r.id_rarete
-                  WHERE cf.id = :id';
+        $query = 'SELECT cf.*, f.id AS film_id, f.nom AS film, r.id_rarete AS rarete_id, r.libelle, r.quantite AS quantite_max
+                   FROM cartes_films cf
+                   JOIN films f ON cf.id_film = f.id
+                   JOIN raretes r ON cf.id_rarete = r.id_rarete
+                   WHERE cf.id = :id';
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':id' => $id]);
@@ -112,11 +113,16 @@ class CarteFilmRepository
                 $row['libelle'],
                 (int)$row['quantite_max']
             );
+            
+            $film = new Film(
+                 (int)$row['film_id'],
+                 $row['film']
+            );
 
             return new CarteFilm(
                 (int)$row['id'],
                 $row['nom'],
-                $row['film'],
+                $film,
                 $rarete,
                 $row['image_path'],
                 $row['description'] ?? null,
@@ -138,11 +144,11 @@ class CarteFilmRepository
         $stmt = $this->pdo->prepare($query);
 
         return $stmt->execute([
-            ':nom'         => $carte->getNom(),
-            ':id_film'     => $carte->getFilm()->getId(),
-            ':id_rarete'   => $carte->getRarete()->getId(),
-            ':image_path'  => $carte->getImagePath(),
-            ':description' => $carte->getDescription(),
+            ':nom'          => $carte->getNom(),
+            ':id_film'      => $carte->getFilm()->getId(),
+            ':id_rarete'    => $carte->getRarete()->getId(),
+            ':image_path'   => $carte->getImagePath(),
+            ':description'  => $carte->getDescription(),
         ]);
     }
 
@@ -159,12 +165,12 @@ class CarteFilmRepository
         $stmt = $this->pdo->prepare($query);
 
         return $stmt->execute([
-            ':id'          => $carte->getId(),
-            ':nom'         => $carte->getNom(),
-            ':id_film'     => $carte->getFilm()->getId(),
-            ':id_rarete'   => $carte->getRarete()->getId(),
-            ':image_path'  => $carte->getImagePath(),
-            ':description' => $carte->getDescription(),
+            ':id'           => $carte->getId(),
+            ':nom'          => $carte->getNom(),
+            ':id_film'      => $carte->getFilm()->getId(),
+            ':id_rarete'    => $carte->getRarete()->getId(),
+            ':image_path'   => $carte->getImagePath(),
+            ':description'  => $carte->getDescription(),
         ]);
     }
 
@@ -184,7 +190,8 @@ class CarteFilmRepository
     public function getAllCartesFilmWithRarityInfo(): array
     {
         $sql = "SELECT cf.id, cf.nom, cf.id_rarete, cf.image_path, cf.description,
-                       f.nom AS film, r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                       f.id AS film_id, f.nom AS film,
+                       r.libelle AS rarete_libelle, r.quantite AS quantite_max
                 FROM cartes_films cf
                 JOIN raretes r ON cf.id_rarete = r.id_rarete
                 LEFT JOIN films f ON cf.id_film = f.id
@@ -202,10 +209,15 @@ class CarteFilmRepository
                 $row['rarete_libelle']
             );
     
+            $film = new Film(
+                (int)$row['film_id'],
+                $row['film']
+            );
+
             $carte = new CarteFilm(
                 (int)$row['id'],
                 $row['nom'],
-                $row['film'],
+                $film,
                 $rarete,
                 $row['image_path'],
                 $row['description'] ?? null,
@@ -213,21 +225,21 @@ class CarteFilmRepository
                 0
             );
     
-            if (in_array($rarete->getId(), [6, 5, 4])) {
-                $stmt2 = $this->pdo->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id WHERE uc.carte_id = ? LIMIT 1");
-                $stmt2->execute([$row['id']]);
-                $carte->setInfoSup($stmt2->fetchColumn() ?: 'Aucun');
-    
-            } elseif (in_array($rarete->getId(), [3, 2, 1])) {
-                $stmt3 = $this->pdo->prepare("SELECT SUM(quantite) as total FROM utilisateurs_cartes_films WHERE carte_id = ?");
-                $stmt3->execute([$row['id']]);
-                $total = $stmt3->fetchColumn() ?: 0;
+            $carteId = (int) $row['id'];
+            $idRarete = (int) $row['id_rarete'];
+            
+            // On récupère TOUJOURS les propriétaires pour que le code HTML soit cohérent
+            $owners = $this->getOwnersByCardId($carteId);
+            $carte->setOwners($owners);
+
+            if (in_array($idRarete, [6, 5, 4])) {
+                // Pour les raretés 4, 5, 6, on affiche le premier propriétaire ou 'Aucun'
+                $carte->setInfoSup($owners[0] ?? 'Aucun');
+            } elseif (in_array($idRarete, [3, 2, 1])) {
+                // Pour les raretés 1, 2, 3, on affiche le total et le maximum
+                $total = $this->getTotalCopies($carteId);
                 $max = ($rarete->getId() === 3) ? 2 : 3;
                 $carte->setInfoSup("Prises : $total/$max");
-    
-                $stmt4 = $this->pdo->prepare("SELECT u.pseudo FROM utilisateurs u JOIN utilisateurs_cartes_films uc ON u.id = uc.user_id WHERE uc.carte_id = ?");
-                $stmt4->execute([$row['id']]);
-                $carte->setOwners($stmt4->fetchAll(PDO::FETCH_COLUMN));
             }
     
             $cartes[] = $carte;
@@ -239,7 +251,8 @@ class CarteFilmRepository
     public function getCollectionFilmByUserId(int $userId): array
     {
         $sql = "SELECT cf.id, cf.nom, cf.id_rarete, cf.image_path, cf.description,
-                       f.nom AS film, r.libelle AS rarete_libelle, r.quantite AS quantite_max
+                       f.id AS film_id, f.nom AS film,
+                       r.libelle AS rarete_libelle, r.quantite AS quantite_max
                 FROM utilisateurs_cartes_films ucf
                 JOIN cartes_films cf ON cf.id = ucf.carte_id
                 LEFT JOIN films f ON cf.id_film = f.id
@@ -249,25 +262,52 @@ class CarteFilmRepository
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$userId]);
-        $cartes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($cartes as &$carte) {
-            $idRarete = (int) $carte['id_rarete'];
-            $carteId = (int) $carte['id'];
+        $cartes = [];
 
+        foreach ($rows as $row) {
+            $rarete = new Rarete(
+                (int)$row['id_rarete'],
+                (int)$row['quantite_max'],
+                $row['rarete_libelle']
+            );
+
+            $film = new Film(
+                (int)$row['film_id'],
+                $row['film']
+            );
+
+            $carte = new CarteFilm(
+                (int)$row['id'],
+                $row['nom'],
+                $film,
+                $rarete,
+                $row['image_path'],
+                $row['description'] ?? null,
+                null,
+                0
+            );
+
+            $idRarete = (int) $row['id_rarete'];
+            $carteId = (int) $row['id'];
+
+            // On récupère TOUJOURS les propriétaires pour que le code HTML soit cohérent
+            $owners = $this->getOwnersByCardId($carteId);
+            $carte->setOwners($owners);
+            
             if (in_array($idRarete, [6, 5, 4])) {
-                $carte['info_sup'] = $this->getSingleOwner($carteId) ?? 'Aucun';
-                $carte['owners'] = null;
+                $carte->setInfoSup($owners[0] ?? 'Aucun');
             } else {
                 $total = $this->getTotalCopies($carteId);
-                $carte['info_sup'] = "Prises : $total";
-                $carte['info_sup'] .= match ($idRarete) {
+                $carte->setInfoSup("Prises : $total");
+                $carte->setInfoSup($carte->getInfoSup() . match ($idRarete) {
                     3 => '/2',
                     2, 1 => '/3',
                     default => '',
-                };
-                $carte['owners'] = $this->getOwnersByCardId($carteId);
+                });
             }
+            $cartes[] = $carte;
         }
 
         return $cartes;
@@ -300,6 +340,4 @@ class CarteFilmRepository
         $stmt->execute([$cardId]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
-
-
 }

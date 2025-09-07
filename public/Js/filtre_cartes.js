@@ -11,30 +11,32 @@ function filterCards() {
     const cards = document.querySelectorAll(".catalogue2 .card");
 
     cards.forEach((card) => {
-        const cardImg = card.querySelector("img");
-        const imgSrc = cardImg?.getAttribute("src").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
-        const characterName = cardImg?.getAttribute("alt")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+        const characterName = card.querySelector("img")?.getAttribute("alt")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
         const animeName = card.getAttribute("data-anime")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+        const filmName = card.getAttribute("data-film")?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+        const cardRareteId = card.getAttribute("data-rarete");
 
-        const rarityFromImage = extractRarityFromImage(imgSrc);
+        let cardRarityName = '';
+        switch(parseInt(cardRareteId)) {
+            case 1: cardRarityName = 'communes'; break;
+            case 2: cardRarityName = 'rares'; break;
+            case 3: cardRarityName = 'epiques'; break;
+            case 4: cardRarityName = 'legendaires'; break;
+            case 5: cardRarityName = 'mythiques'; break;
+            case 6: cardRarityName = 'events'; break;
+        }
 
         const matchesSearch =
             searchValue === "" ||
             characterName.includes(searchValue) ||
-            animeName.includes(searchValue);
+            animeName.includes(searchValue) ||
+            filmName.includes(searchValue);
 
         const matchesRarity =
-            selectedRarity === "" || rarityFromImage === selectedRarity;
+            selectedRarity === "" || cardRarityName === selectedRarity;
 
         card.style.display = matchesSearch && matchesRarity ? "block" : "none";
     });
-}
-
-function extractRarityFromImage(src) {
-    const match = src.match(
-        /\/Cartes\/(?:[^\/]*_)?(Communes|Rares|Mythiques|Legendaires|Epiques|Events)/i
-    );
-    return match ? match[1].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
 }
 
 // Ajouter les écouteurs d'événements pour le filtrage
