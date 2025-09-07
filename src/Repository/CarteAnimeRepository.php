@@ -182,97 +182,87 @@ class CarteAnimeRepository
     }
 
 
-    public function getAllCartesWithRarityInfo(int $page = 1, int $limit = 30, ?int $idRarete = null, ?int $idAnime = null): array
-    {
-        $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description, ca.image_path,
-                a.id AS anime_id, a.nom AS anime_nom,
-                r.libelle AS rarete_libelle, r.quantite AS quantite_max
-                FROM cartes_animes ca
-                JOIN raretes r ON ca.id_rarete = r.id_rarete
-                LEFT JOIN animes a ON ca.id_anime = a.id
-                WHERE 1=1";
+public function getAllCartesWithRarityInfo(int $page = 1, int $limit = 99999, ?int $idRarete = null, ?int $idAnime = null): array
+{
+    $sql = "SELECT ca.id, ca.nom, ca.id_rarete, ca.description, ca.image_path,
+                   a.id AS anime_id, a.nom AS anime_nom,
+                   r.libelle AS rarete_libelle, r.quantite AS quantite_max,
+                   GROUP_CONCAT(u.pseudo SEPARATOR ',') AS proprietaires_pseudos
+            FROM cartes_animes ca
+            JOIN raretes r ON ca.id_rarete = r.id_rarete
+            LEFT JOIN animes a ON ca.id_anime = a.id
+            LEFT JOIN utilisateurs_cartes_animes uca ON uca.carte_id = ca.id
+            LEFT JOIN utilisateurs u ON u.id = uca.user_id
+            WHERE 1=1";
 
-        $params = [];
+    $params = [];
 
-        if ($idRarete !== null) {
-            $sql .= " AND ca.id_rarete = ?";
-            $params[] = $idRarete;
-        }
-
-        if ($idAnime !== null) {
-            $sql .= " AND ca.id_anime = ?";
-            $params[] = $idAnime;
-        }
-
-        $offset = ($page - 1) * $limit;
-        $sql .= " ORDER BY ca.id_rarete DESC, ca.id ASC LIMIT " . intval($limit) . " OFFSET " . intval($offset);
-
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-
-        $cartes = [];
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $rarete = new Rarete(
-                (int)$row['id_rarete'],
-                (int)$row['quantite_max'],
-                $row['rarete_libelle']
-            );
-
-            $anime = new Anime(
-                (int)($row['anime_id'] ?? 0),
-                $row['anime_nom'] ?? 'Inconnu'
-            );
-
-            $carte = new CarteAnime(
-                (int)$row['id'],
-                $row['nom'],
-                $anime,
-                $rarete,
-                $row['image_path'],
-                $row['description'] ?? null,
-                null,
-                0
-            );
-
-            // Ajout des infos supplémentaires
-            if (in_array($rarete->getId(), [6, 5, 4])) {
-                $stmt2 = $this->pdo->prepare("
-                    SELECT u.pseudo 
-                    FROM utilisateurs u 
-                    JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id 
-                    WHERE uc.carte_id = ? 
-                    LIMIT 1
-                ");
-                $stmt2->execute([$row['id']]);
-                $carte->setInfoSup($stmt2->fetchColumn() ?: 'Aucun');
-
-            } elseif (in_array($rarete->getId(), [3, 2, 1])) {
-                $stmt3 = $this->pdo->prepare("
-                    SELECT SUM(quantite) as total 
-                    FROM utilisateurs_cartes_animes 
-                    WHERE carte_id = ?
-                ");
-                $stmt3->execute([$row['id']]);
-                $total = $stmt3->fetchColumn() ?: 0;
-                $max = ($rarete->getId() === 3) ? 2 : 3;
-                $carte->setInfoSup("Prises : $total/$max");
-
-                $stmt4 = $this->pdo->prepare("
-                    SELECT u.pseudo 
-                    FROM utilisateurs u 
-                    JOIN utilisateurs_cartes_animes uc ON u.id = uc.user_id 
-                    WHERE uc.carte_id = ?
-                ");
-                $stmt4->execute([$row['id']]);
-                $carte->setOwners($stmt4->fetchAll(PDO::FETCH_COLUMN));
-            }
-
-            $cartes[] = $carte;
-        }
-
-        return $cartes;
+    if ($idRarete !== null) {
+        $sql .= " AND ca.id_rarete = ?";
+        $params[] = $idRarete;
     }
+
+    if ($idAnime !== null) {
+        $sql .= " AND ca.id_anime = ?";
+        $params[] = $idAnime;
+    }
+
+    $sql .= " GROUP BY ca.id ORDER BY ca.id_rarete DESC, ca.id ASC";
+
+    $offset = ($page - 1) * $limit;
+    $sql .= " LIMIT " . intval($limit) . " OFFSET " . intval($offset);
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($params);
+
+    $cartes = [];
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $rarete = new Rarete(
+            (int)$row['id_rarete'],
+            (int)$row['quantite_max'],
+            $row['rarete_libelle']
+        );
+
+        $anime = new Anime(
+            (int)($row['anime_id'] ?? 0),
+            $row['anime_nom'] ?? 'Inconnu'
+        );
+
+        // Récupération des propriétaires depuis la chaîne GROUP_CONCAT
+        $owners = $row['proprietaires_pseudos'] ? explode(',', $row['proprietaires_pseudos']) : [];
+        $proprietaire_principal = !empty($owners) ? $owners[0] : null;
+
+        $carte = new CarteAnime(
+            (int)$row['id'],
+            $row['nom'],
+            $anime,
+            $rarete,
+            $row['image_path'],
+            $row['description'] ?? null,
+            $proprietaire_principal,
+            0
+        );
+
+        // On stocke la liste complète des propriétaires dans l'objet CarteAnime
+        $carte->setOwners($owners);
+        
+        // Ajout des infos supplémentaires pour les raretés 1, 2, 3
+        if (in_array($rarete->getId(), [3, 2, 1])) {
+            $total = $this->getTotalCopies((int)$row['id']);
+            $max = match ($rarete->getId()) {
+                3 => 2,
+                2, 1 => 3,
+                default => 0,
+            };
+            $carte->setInfoSup("Prises : $total/$max");
+        }
+
+
+        $cartes[] = $carte;
+    }
+    return $cartes;
+}
 
     public function countCartesAnime(?int $idRarete = null, ?int $idAnime = null): int
     {

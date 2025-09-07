@@ -9,7 +9,6 @@ $page_active = 'catalogue';
     <meta charset="UTF-8">
     <title>Cartes Animés - Catalogue</title>
     <link rel="stylesheet" href="/Css/styles.css">
-    <!-- <link rel="stylesheet" href="/Css/catalogue.css"> -->
     <link rel="stylesheet" href="/Css/header.css">
     <link rel="stylesheet" href="/Css/footer.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,53 +21,75 @@ $page_active = 'catalogue';
 <?php require_once __DIR__ . '/../Partials/header.php'; ?>
 
 <main>
-            <input type="text" id="searchbar" placeholder="Recherche un personnage ou un animé."/>
-
-        <div class="filters-container">
-          <div class="filters">
-              <div class="filter-group">
-                  <label for="rarityFilter">🌟 Rareté</label>
-                  <select id="rarityFilter">
-                      <option value="">Toutes les raretés</option>
-                      <option value="communes">Communes</option>
-                      <option value="rares">Rares</option>
-                      <option value="epiques">Épiques</option>
-                      <option value="legendaires">Légendaires</option>
-                      <option value="mythiques">Mythiques</option>
-                      <option value="events">Events</option>
-                  </select>
-              </div>
-          </div>
-      </div>
-
-<div class="catalogue2">
-    <?php foreach ($cartes as $carte): ?>
-        <div class="card" data-anime="<?= htmlspecialchars($carte->getAnime()->getNom()) ?>" data-rarete="<?= $carte->getRarete()->getId() ?>">
-            <a href="/catalogue/anime/carte/<?= $carte->getId() ?>">
-                <img src="/<?= htmlspecialchars($carte->getImagePath()) ?>" alt="<?= htmlspecialchars($carte->getNom()) ?>">
-            </a>
-            <div class="card-content">
-                <h2 class="card-title"><?= htmlspecialchars($carte->getNom()) ?></h2>
-                <p class="card-description"><?= htmlspecialchars($carte->getDescription()) ?></p>
-
-                <?php if (!empty($carte->getInfoSup())): ?>
-                    <p class="card-extra"><?= htmlspecialchars($carte->getInfoSup()) ?></p>
-                <?php endif; ?>
-
-                <?php if ($carte->getOwners()): ?>
-                    <p class="owners">Propriétaires : <?= htmlspecialchars(implode(', ', $carte->getOwners())) ?></p>
-                <?php endif; ?>
+    <input type="text" id="searchbar" placeholder="Recherche un personnage ou un animé."/>
+    <div class="filters-container">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="rarityFilter">🌟 Rareté</label>
+                <select id="rarityFilter">
+                    <option value="">Toutes les raretés</option>
+                    <option value="communes">Communes</option>
+                    <option value="rares">Rares</option>
+                    <option value="epiques">Épiques</option>
+                    <option value="legendaires">Légendaires</option>
+                    <option value="mythiques">Mythiques</option>
+                    <option value="events">Events</option>
+                </select>
             </div>
         </div>
-    <?php endforeach; ?>
-</div>
+    </div>
+    <div class="catalogue2">
+        <?php foreach ($cartes as $carte): ?>
+            <div class="card" data-anime="<?= htmlspecialchars($carte->getAnime()->getNom()) ?>" data-rarete="<?= $carte->getRarete()->getId() ?>">
+                <a href="/catalogue/anime/carte/<?= $carte->getId() ?>">
+                    <img src="/<?= htmlspecialchars($carte->getImagePath()) ?>" alt="<?= htmlspecialchars($carte->getNom()) ?>">
+                </a>
+                <div class="card-content">
+                    <?php if (in_array($carte->getRarete()->getId(), [4, 5, 6])): // Raretés 4, 5, 6 ?>
+                        <h2 class="card-title">
+                            <?php
+                            $owners = $carte->getOwners();
+                            if (!empty($owners)) {
+                                echo htmlspecialchars($owners[0]);
+                            } else {
+                                echo "Aucun";
+                            }
+                            ?>
+                        </h2>
+                        <?php if ($carte->getRarete()->getId() == 5): // Spécifique aux Mythiques ?>
+                            <p class="card-description"><?= htmlspecialchars($carte->getDescription()) ?></p>
+                        <?php endif; ?>
+                    <?php else: // Raretés 1, 2, 3 ?>
+                        <h2 class="card-title">
+                            <?php
+                            $infoSup = $carte->getInfoSup();
+                            if (!empty($infoSup)) {
+                                $parts = explode(" : ", $infoSup);
+                                if (count($parts) > 1) {
+                                    echo htmlspecialchars($parts[1]);
+                                }
+                            } else {
+                                echo "0/0";
+                            }
+                            ?>
+                        </h2>
+                        <?php endif; ?>
+                    
+                    <?php if (!empty($carte->getOwners())): ?>
+                        <div class="owners-list" style="display: none;">
+                            <p>Propriétaires : <?= htmlspecialchars(implode(', ', $carte->getOwners())) ?></p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 </main>
 <footer>
     <p>© 2024 - Rasengan</p>
     <a href="https://discord.gg/kyfQZbnkjy" target="_blank">Rejoindre</a>
 </footer>
-<!-- <?php require_once __DIR__ . '/Partials/footer.php'; ?> -->
-<script src="/Js/main.js"></script>
 <script src="/Js/utilisateurs_cartes.js"></script>
+<script src="/Js/filtre_cartes.js"></script>
 </body>
 </html>
